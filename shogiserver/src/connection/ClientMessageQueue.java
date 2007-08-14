@@ -58,6 +58,14 @@ public abstract class ClientMessageQueue {
         return true;
     }
     
+    public boolean isEmpty() {
+        return this.queue.isEmpty();
+    }
+    
+    public int size() {
+        return this.queue.size();
+    }
+    
     abstract public ClientMessage dequeueMessage();
     
 }
