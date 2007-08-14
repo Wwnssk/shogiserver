@@ -21,6 +21,8 @@ package protocol.modules;
 
 import connection.ClientInputMessage;
 import connection.ClientOutputMessage;
+import connection.ClientInputMessageQueue;
+import connection.ClientOutputMessageQueue;
 
 /**
  *
@@ -40,4 +42,5 @@ public interface ProtocolModule {
     
     public String[] getDependencies();
     
+    public ClientOutputMessageQueue parseClientMessage(ClientInputMessageQueue in) throws UnrecognizedProtocolException;
 }
