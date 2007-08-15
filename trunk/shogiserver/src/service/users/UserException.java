@@ -1,5 +1,5 @@
 /*
- * UserManager.java
+ * UserList.java
  * Copyright (C) 2007  Adrian Petrescu
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,31 +23,24 @@ package service.users;
  *
  * @author Adrian Petrescu
  */
-public class UserManager {
+public class UserException extends java.lang.Exception {
     
-    public static UserManager getUserManager() {
-        if (UserManager.singleton == null) {
-            UserManager.singleton = new UserManager();
-        }
-        return UserManager.singleton;
+    private UserList users;
+    private String message;
+    
+    /**
+     * Creates a new instance of <code>UserException</code> without detail message.
+     */
+    public UserException(UserList users, String message) {
+        this.message = message;
+        this.users = users;
+    }
+
+    public UserList getUsers() {
+        return users;
     }
     
-    private static UserManager singleton;
-    
-    public User getUserByUsername(String username) {
-        return null;
+    public String getMessage() {
+        return this.message;
     }
-    
-    public User getUserByUid(int userid) {
-        return null;
-    }
-    
-    public void registerNewUser(String username, int userid) {
-        return;
-    }
-    
-    /** Creates a new instance of UserManager */
-    private UserManager() {
-    }
-    
 }

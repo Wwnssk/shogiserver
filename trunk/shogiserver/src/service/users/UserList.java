@@ -1,5 +1,5 @@
 /*
- * UserManager.java
+ * UserList.java
  * Copyright (C) 2007  Adrian Petrescu
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,35 +19,36 @@
 
 package service.users;
 
+import java.util.LinkedList;
+import java.util.Iterator;
+
 /**
  *
  * @author Adrian Petrescu
  */
-public class UserManager {
+public class UserList implements Iterable {
     
-    public static UserManager getUserManager() {
-        if (UserManager.singleton == null) {
-            UserManager.singleton = new UserManager();
+    private LinkedList<User> userList;
+    
+    /** Creates a new instance of UserList */
+    public UserList() {
+        userList = new LinkedList<User>();
+    }
+    
+    public UserList(User user) {
+        userList = new LinkedList<User>();
+        userList.add(user);
+    }
+    
+    public UserList(User[] users) {
+        userList = new LinkedList<User>();
+        for (User user : users) {
+            userList.add(user);
         }
-        return UserManager.singleton;
     }
     
-    private static UserManager singleton;
-    
-    public User getUserByUsername(String username) {
-        return null;
-    }
-    
-    public User getUserByUid(int userid) {
-        return null;
-    }
-    
-    public void registerNewUser(String username, int userid) {
-        return;
-    }
-    
-    /** Creates a new instance of UserManager */
-    private UserManager() {
+    public Iterator<User> iterator() {
+        return userList.iterator();
     }
     
 }
