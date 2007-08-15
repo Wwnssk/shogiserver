@@ -29,11 +29,10 @@ import connection.ClientOutputMessage;
 public class ProtocolManager {
     
     public static ProtocolManager getProtocolManager() {
-        if (singleton != null) {
-            return singleton;
-        } else {
-            return new ProtocolManager();
+        if (ProtocolManager.singleton == null) {
+            ProtocolManager.singleton = new ProtocolManager();
         }
+        return ProtocolManager.singleton;
     }
     
     private static ProtocolManager singleton;
