@@ -30,6 +30,7 @@ public class MySQLDatabaseConnectionTest extends TestCase {
     private static final int dbPort = 3306;
     private static final String dbName = "shogi_test_db";
     private static final String pathToTestSchema = "sql/schemas/shogi_test_db.sql";
+    private Connection conn;
     
     public MySQLDatabaseConnectionTest(String testName) {
         super(testName);
@@ -41,26 +42,30 @@ public class MySQLDatabaseConnectionTest extends TestCase {
         String dbUrl = "jdbc:mysql://" + dbHost + "/";
         
         Class.forName("com.mysql.jdbc.Driver").newInstance();
-        Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+        conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
         Statement stmt = conn.createStatement();
         
         BufferedReader in = new BufferedReader(new FileReader(new File(pathToTestSchema)));
         String sqlQuery = "";
-        while ((sqlQuery += in.readLine()) != null) {
+        String nextLine = "";
+        while ((nextLine = in.readLine()) != null) {
+            sqlQuery += nextLine;
             if (!sqlQuery.isEmpty()) {
                 if (sqlQuery.endsWith(";")) {
                     stmt.execute(sqlQuery);
                     System.out.println(sqlQuery);
                     sqlQuery = "";
-                } 
+                } else if (sqlQuery.startsWith("--")) {
+                    sqlQuery = "";
+                }
             }
         }
         
         in.close();
-        conn.close();
     }
 
     protected void tearDown() throws Exception {
+        conn.close();
     }
 
     /**
