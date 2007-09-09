@@ -18,6 +18,8 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import service.users.User;
+
 /**
  *
  * @author Adrian Petrescu
@@ -30,7 +32,6 @@ public class MySQLDatabaseConnectionTest extends TestCase {
     private static final int dbPort = 3306;
     private static final String dbName = "shogi_test_db";
     private static final String pathToTestSchema = "sql/schemas/shogi_test_db.sql";
-    private Connection conn;
     
     public MySQLDatabaseConnectionTest(String testName) {
         super(testName);
@@ -42,7 +43,7 @@ public class MySQLDatabaseConnectionTest extends TestCase {
         String dbUrl = "jdbc:mysql://" + dbHost + "/";
         
         Class.forName("com.mysql.jdbc.Driver").newInstance();
-        conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
+        Connection conn = DriverManager.getConnection(dbUrl, dbUser, dbPass);
         Statement stmt = conn.createStatement();
         
         BufferedReader in = new BufferedReader(new FileReader(new File(pathToTestSchema)));
@@ -62,27 +63,57 @@ public class MySQLDatabaseConnectionTest extends TestCase {
         }
         
         in.close();
-    }
-
-    protected void tearDown() throws Exception {
         conn.close();
     }
 
+    protected void tearDown() {
+    }
+    
     /**
-     * Test of getUserByName method, of class service.database.MySQLDatabaseConnection.
+     * Test of checkConnection method, of class service.database.MySQLDatabaseConnection.
      */
-    public void testGetUserByName() {
+    public void checkCheckConnection() throws Exception {
+        System.out.println("checkConnection");
+        
+        MySQLDatabaseConnection instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        assertTrue(instance.checkConnection());
+        instance.closeConnection();
+        assertFalse(instance.checkConnection());
+    }
+
+    /**
+     * Test of retrieveUserInfo method, of class service.database.MySQLDatabaseConnection.
+     */
+    public void testRetrieveUserInfo() throws Exception {
         System.out.println("getUserByName");
         
-        String userName = "";
-        MySQLDatabaseConnection instance = null;
+        User user;
+        String username;
+        MySQLDatabaseConnection instance;
         
-        String expResult = "";
-        //String result = instance.getUserByName(userName);
-        //assertEquals(expResult, result);
         
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
+        // First we'll test a user that IS present in the test database.
+        username = "admin";
+        instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        user = instance.retrieveUserInfo(username);
+        assertEquals(user.getUserid(), 1);
+        assertEquals(user.getUsername(), "admin");
+        instance.closeConnection();
+        
+        // Now we'll test a user we know is NOT present in the test database.
+        username = "rumpelstiltskin";
+        instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        user = instance.retrieveUserInfo(username);
+        assertNull(user);
+        
+        // Now we'll validate a few users whose names aren't even legal.
+        username = "no spaces";
+        instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        user = instance.retrieveUserInfo(username);
+        assertNull(user);
+        
+        
+        
     }
     
 }
