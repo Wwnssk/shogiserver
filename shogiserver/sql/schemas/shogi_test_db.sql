@@ -21,15 +21,24 @@
 CREATE DATABASE IF NOT EXISTS shogi_test_db;
 USE shogi_test_db;
 
+--
+-- Definition of table "shogi_test_db"."Users"
+--
+
 DROP TABLE IF EXISTS "shogi_test_db"."Users";
 CREATE TABLE  "shogi_test_db"."Users" (
   "user_id" int(10) unsigned NOT NULL auto_increment,
   "user_name" varchar(25) character set utf8 NOT NULL,
   "user_password" varchar(25) character set ascii NOT NULL,
+  "user_email" varchar(50) character set ascii NOT NULL,
   PRIMARY KEY  ("user_id","user_name")
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
-INSERT INTO "shogi_test_db"."Users" ("user_id","user_name","user_password") VALUES 
- (1,'admin','admin');
+
+--
+-- Dumping data for table "shogi_test_db"."Users"
+--
+INSERT INTO "shogi_test_db"."Users" ("user_id","user_name","user_password","user_email") VALUES 
+ (1,'admin','admin','');
 
 
 
