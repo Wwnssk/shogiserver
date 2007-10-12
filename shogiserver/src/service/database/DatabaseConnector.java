@@ -1,5 +1,5 @@
 /*
- * UserManager.java
+ * ConnectionManager.java
  * Copyright (C) 2007  Adrian Petrescu
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,24 +17,20 @@
  *
  */
 
-package service.users;
+package service.database;
+
+import service.users.User;
 
 /**
  *
  * @author Adrian Petrescu
  */
-public class UserManager {
+public interface DatabaseConnector {
     
-    public User getUserByUsername(String username) {
-        return null;
-    }
-    
-    public User getUserByUid(int userid) {
-        return null;
-    }
-    
-    /** Creates a new instance of UserManager */
-    public UserManager() {
-    }
+    public boolean checkConnection();
+    public void closeConnection();
+    public boolean connectToDatabase() throws DatabaseException;
+    public User retrieveUserInfo(String userName) throws DatabaseException;
+    public User retrieveUserInfo(int userID) throws DatabaseException;
     
 }

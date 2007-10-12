@@ -19,14 +19,43 @@
 
 package service;
 
+import service.configuration.ConfigurationManager;
+import service.database.DatabaseManager;
+import service.users.UserManager;
+
 /**
  *
  * @author Adrian Petrescu
  */
 public class ServiceManager {
     
-    /** Creates a new instance of ServiceManager */
-    public ServiceManager() {
+    private static ConfigurationManager configurationManager;
+    private static DatabaseManager databaseManager;
+    private static UserManager userManager;
+
+    public static ConfigurationManager getConfigurationManager() {
+        if (configurationManager == null) {
+            configurationManager = new ConfigurationManager();
+        }
+        return configurationManager;
+    }
+
+    public static DatabaseManager getDatabaseManager() {
+        if (databaseManager == null) {
+            try {
+                databaseManager = new DatabaseManager();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return databaseManager;
+    }
+
+    public static UserManager getUserManager() {
+        if (userManager == null) {
+            userManager = new UserManager();
+        }
+        return userManager;
     }
     
 }

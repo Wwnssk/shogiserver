@@ -1,5 +1,5 @@
 /*
- * MySQLDatabaseConnection.java
+ * MySQLDatabaseConnector.java
  * Copyright (C) 2007  Adrian Petrescu
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,21 +25,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import javax.swing.text.html.CSS;
+
+import service.ServiceManager;
 import service.users.User;
 
 /**
  * 
  * @author Adrian Petrescu
  */
-public class MySQLDatabaseConnection {
+public class MySQLDatabaseConnector implements DatabaseConnector {
     
     private Connection conn;
     
     private static final String ENGINE_NAME = "MySQL";
-    
-    //TODO: Un-hardcode maximum username length
-    private static final int MAX_USERNAME_LENGTH = 16;
-    private static final int MIN_USERNAME_LENGTH = 4;
     
     private static final String USER_TABLE = "Users";
     private static final String USER_COLUMN_USERNAME = "user_name";
@@ -50,8 +48,10 @@ public class MySQLDatabaseConnection {
         return false;
     }
     
-    /** Creates a new instance of MySQLDatabaseConnection */
-    public MySQLDatabaseConnection(String dbHost, int port, String dbUser, String dbPassword, String dbName) throws Exception {
+    /**
+     * Creates a new instance of MySQLDatabaseConnector
+     */
+    public MySQLDatabaseConnector(String dbHost, int port, String dbUser, String dbPassword, String dbName) throws Exception {
         //TODO: Specify a better exception to be thrown in the event of being unable to instantiate the JDBC driver.
         //TODO: Allow connections on non-default ports, and add that to the JUnit test as well.
         
@@ -73,6 +73,10 @@ public class MySQLDatabaseConnection {
      * rules.
      */
     private boolean validateUsername(String username) {
+        int MAX_USERNAME_LENGTH = 
+                Integer.parseInt(ServiceManager.getConfigurationManager().getConfigurationOption("MAX_USERNAME_LENGTH"));
+        int MIN_USERNAME_LENGTH =
+                Integer.parseInt(ServiceManager.getConfigurationManager().getConfigurationOption("MIN_USERNAME_LENGTH"));
         if (username.length() > MAX_USERNAME_LENGTH || username.length() < MIN_USERNAME_LENGTH) {
             return false;
         }
@@ -87,15 +91,13 @@ public class MySQLDatabaseConnection {
         return true;
     }
     
-    
-    
-    public User retrieveUserInfo (String username) throws DatabaseException {
-        if (!validateUsername(username)) {
+    public User retrieveUserInfo (String userName) throws DatabaseException {
+        if (!validateUsername(userName)) {
             return null;
         }
         
         User user;
-        String sqlQuery = "SELECT * FROM " + USER_TABLE + " WHERE user_name = '" + username + "';";
+        String sqlQuery = "SELECT * FROM " + USER_TABLE + " WHERE user_name = '" + userName + "';";
         Statement userQuery;
         try {
             userQuery = conn.createStatement();
@@ -109,9 +111,35 @@ public class MySQLDatabaseConnection {
             if (!rs.next()) {
                 return null;
             }
-            int userid = rs.getInt(USER_COLUMN_USERID);
+            int userID = rs.getInt(USER_COLUMN_USERID);
             
-            user = new User(username, userid);
+            user = new User(userName, userID);
+        } catch (SQLException e) {
+            throw new DatabaseException(ENGINE_NAME, "Database could not be reached when trying to send query: "
+                    + sqlQuery);
+        }
+        return user;
+    }
+    
+    public User retrieveUserInfo (int userID) throws DatabaseException {
+        User user;
+        String sqlQuery = "SELECT * FROM " + USER_TABLE + " WHERE user_id = '" + userID + "';";
+        Statement userQuery;
+        try {
+            userQuery = conn.createStatement();
+        } catch (SQLException e) {
+            throw new DatabaseException (ENGINE_NAME, "Database could not be reached when trying to send query: "
+                    + sqlQuery);
+        }
+        
+        try {
+            ResultSet rs = userQuery.executeQuery(sqlQuery);
+            if (!rs.next()) {
+                return null;
+            }
+            String userName = rs.getString(USER_COLUMN_USERNAME);
+            
+            user = new User(userName, userID);
         } catch (SQLException e) {
             throw new DatabaseException(ENGINE_NAME, "Database could not be reached when trying to send query: "
                     + sqlQuery);
