@@ -70,31 +70,31 @@ public class MySQLDatabaseConnectionTest extends TestCase {
     }
     
     /**
-     * Test of checkConnection method, of class service.database.MySQLDatabaseConnection.
+     * Test of checkConnection method, of class service.database.MySQLDatabaseConnector.
      */
     public void checkCheckConnection() throws Exception {
         System.out.println("checkConnection");
         
-        MySQLDatabaseConnection instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        MySQLDatabaseConnector instance = new MySQLDatabaseConnector(dbHost, dbPort, dbUser, dbPass, dbName);
         assertTrue(instance.checkConnection());
         instance.closeConnection();
         assertFalse(instance.checkConnection());
     }
 
     /**
-     * Test of retrieveUserInfo method, of class service.database.MySQLDatabaseConnection.
+     * Test of retrieveUserInfo method, of class service.database.MySQLDatabaseConnector.
      */
     public void testRetrieveUserInfo() throws Exception {
         System.out.println("getUserByName");
         
         User user;
         String username;
-        MySQLDatabaseConnection instance;
+        MySQLDatabaseConnector instance;
         
         
         // First we'll test a user that IS present in the test database.
         username = "admin";
-        instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        instance = new MySQLDatabaseConnector(dbHost, dbPort, dbUser, dbPass, dbName);
         user = instance.retrieveUserInfo(username);
         assertEquals(user.getUserid(), 1);
         assertEquals(user.getUsername(), "admin");
@@ -102,13 +102,13 @@ public class MySQLDatabaseConnectionTest extends TestCase {
         
         // Now we'll test a user we know is NOT present in the test database.
         username = "rumpelstiltskin";
-        instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        instance = new MySQLDatabaseConnector(dbHost, dbPort, dbUser, dbPass, dbName);
         user = instance.retrieveUserInfo(username);
         assertNull(user);
         
         // Now we'll validate a few users whose names aren't even legal.
         username = "no spaces";
-        instance = new MySQLDatabaseConnection(dbHost, dbPort, dbUser, dbPass, dbName);
+        instance = new MySQLDatabaseConnector(dbHost, dbPort, dbUser, dbPass, dbName);
         user = instance.retrieveUserInfo(username);
         assertNull(user);
         
