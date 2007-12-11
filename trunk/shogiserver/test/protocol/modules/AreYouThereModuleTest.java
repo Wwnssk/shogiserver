@@ -7,7 +7,6 @@
 
 package protocol.modules;
 
-import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
 import junit.framework.*;
 import connection.ClientInputMessage;
 import connection.ClientOutputMessage;
