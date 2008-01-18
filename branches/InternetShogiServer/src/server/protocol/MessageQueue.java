@@ -68,7 +68,7 @@ public abstract class MessageQueue {
 	 * 
 	 * @param priority The new priority of this MessageQueue.
 	 */
-	protected void setPriority(int priority) {
+	public void setPriority(int priority) {
 		this.priority = Math.min(Math.max(priority, 0), MAX_PRIORITY);
 	}
 
@@ -82,7 +82,7 @@ public abstract class MessageQueue {
 	 * 
 	 * @return The priority of this MessageQueue.
 	 */
-	protected int getPriority() {
+	public int getPriority() {
 		return priority;
 	}
 }
