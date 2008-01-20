@@ -6,13 +6,21 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import server.protocol.InputMessageQueue;
 
-public abstract class GlobalInputMessageQueue {
+public class GlobalInputMessageQueue {
 	/**
 	 * 
 	 * 
 	 * @author Adrian Petrescu
 	 */
 
+	private static GlobalInputMessageQueue self;
+	public static GlobalInputMessageQueue getGlobalInputMessageQueue() {
+		if (self == null) {
+			self = new GlobalInputMessageQueue();
+		}
+		return self;
+	}
+	
 	protected Queue<InputMessageQueue> lowPriorityInputMessageQueue;
 	protected Queue<InputMessageQueue> medPriorityInputMessageQueue;
 	protected Queue<InputMessageQueue> highPriorityInputMessageQueue;
@@ -31,7 +39,7 @@ public abstract class GlobalInputMessageQueue {
 	 * 
 	 * @param message The message to be queued up.
 	 */
-	protected void enqueue(InputMessageQueue message) {
+	protected synchronized void enqueue(InputMessageQueue message) {
 		switch (message.getPriority()) {
 			case 0: lowPriorityInputMessageQueue.add(message);
 					break;
@@ -46,7 +54,7 @@ public abstract class GlobalInputMessageQueue {
 	 * @return The oldest message of the highest priority available, or NULL if the
 	 * queue is empty.
 	 */
-	protected InputMessageQueue dequeue() {
+	protected synchronized InputMessageQueue dequeue() {
 		try {
 			highPriorityInputMessageQueue.remove();
 		} catch (NoSuchElementException noHigh) {

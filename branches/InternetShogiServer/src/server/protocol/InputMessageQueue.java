@@ -21,7 +21,15 @@ public class InputMessageQueue extends MessageQueue {
 	 */
 	public InputMessageQueue() {
 		super();
-		this.messageQueue = new LinkedList<ProtocolMessage>();
+		messageQueue = new LinkedList<ProtocolMessage>();
+		priority = 1;
+	}
+	
+	public InputMessageQueue(ProtocolMessage message) {
+		super();
+		messageQueue = new LinkedList<ProtocolMessage>();
+		priority = 1;
+		messageQueue.add(message);
 	}
 	
 }
