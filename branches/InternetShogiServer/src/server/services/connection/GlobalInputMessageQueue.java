@@ -6,14 +6,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import server.protocol.InputMessageQueue;
 
+/**
+ * A threadsafe global queue of all the messages received by all clients
+ * connected to the server. The server is constantly processing this queue.
+ * 
+ * The queue uses Round-Robin scheduling; that is, messages of higher priority
+ * are always dequeued before messages of lower priority, and it follows a FIFO
+ * scheme for messages with the same priority.
+ * 
+ * @author Adrian Petrescu
+ */
 public class GlobalInputMessageQueue {
-	/**
-	 * 
-	 * 
-	 * @author Adrian Petrescu
-	 */
 
 	private static GlobalInputMessageQueue self;
+	/**
+	 * Singleton accessor to the GlobalInputMessageQueue. If the queue has not
+	 * yet been accessed, it will be created.
+	 * 
+	 * @return A reference to the GlobalInputMessageQueue.
+	 */
 	public static GlobalInputMessageQueue getGlobalInputMessageQueue() {
 		if (self == null) {
 			self = new GlobalInputMessageQueue();

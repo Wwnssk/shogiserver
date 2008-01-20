@@ -17,8 +17,24 @@ import server.services.InvalidServiceConfigurationException;
 import server.services.user.NoSuchUserException;
 import server.services.user.User;
 
+/**
+ * This GlobalService is one of the core services of the server. It maintains
+ * a table of all active connections, listens for new incoming connections, and
+ * is responsible for terminating and checking existing connections.
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class ConnectionManager implements GlobalService {
 	
+	/**
+	 * This thread establishes a ServerSocket on the given port and listens for
+	 * new incoming connections. When they are received, the ConnectionManager is
+	 * notified.
+	 * 
+	 * @author Adrian Petrescu
+	 *
+	 */
 	class ConnectionListener implements Runnable {
 		
 		private int port;
@@ -61,6 +77,11 @@ public class ConnectionManager implements GlobalService {
 		return SERVICE_NAME;
 	}
 	
+	/**
+	 * Called when the server is shutting down. The ConnectionManager stops
+	 * accepting any more incoming connections, and iterates through the active 
+	 * connections, closing them cleanly.
+	 */
 	public void shutdown() {
 		listener.disconnect();
 		while (!connectionTable.isEmpty()) {
@@ -74,6 +95,18 @@ public class ConnectionManager implements GlobalService {
 		}
 	}
 	
+	/**
+	 * Called when the server is ready to accept new incoming connections. A
+	 * ConnectionListener thread is started up that listens on a given port for
+	 * new incoming connections, and establishes a ClientConnection with them.
+	 * 
+	 * @param properties A Properties structure containing configuration data
+	 * for the ConnectionManager.
+	 * <br>
+	 * <b>Required configuration options:</b>
+	 * <br>
+	 * port (the port to listen on).
+	 */
 	public void initialize(Properties properties) throws InvalidServiceConfigurationException {
 		try {
 			port = (Integer) properties.get("port");
@@ -85,6 +118,14 @@ public class ConnectionManager implements GlobalService {
 		new Thread(listener).start();
 	}
 	
+	/**
+	 * Called by the ConnectionManager when it has established a socket connection with
+	 * a prospective client. This method is responsible for validating the connection's
+	 * login credentials, creating an associated ClientConnection, and adding it to the
+	 * global connection table.
+	 * 
+	 * @param socket A socket connection to the prospective client.
+	 */
 	private void newConnection(Socket socket) {
 		// TODO: Make sure user isn't logging in twice.
 		try {

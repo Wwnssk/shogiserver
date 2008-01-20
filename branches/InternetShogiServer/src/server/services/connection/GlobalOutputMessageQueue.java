@@ -4,20 +4,34 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-
-/**
- * The global, thread-safe queue where the various parts of
- * 
- * @author Adrian Petrescu
- *
- */
 import server.protocol.OutputMessageQueue;
 
-public abstract class GlobalOutputMessageQueue {
+
+/**
+ * A threadsafe global queue of all the messages ready to be sent to clients
+ * connected to the server. The server is constantly processing this queue.
+ * 
+ * The queue uses Round-Robin scheduling; that is, messages of higher priority
+ * are always dequeued before messages of lower priority, and it follows a FIFO
+ * scheme for messages with the same priority.
+ * 
+ * @author Adrian Petrescu
+ */
+public class GlobalOutputMessageQueue {
+
+	private static GlobalOutputMessageQueue self;
 	/**
+	 * Singleton accessor to the GlobalOutputMessageQueue. If the queue has not
+	 * yet been accessed, it will be created.
 	 * 
-	 * @author Adrian Petrescu
+	 * @return A reference to the GlobalOutputMessageQueue.
 	 */
+	public static GlobalOutputMessageQueue getGlobalOutputMessageQueue() {
+		if (self == null) {
+			self = new GlobalOutputMessageQueue();
+		}
+		return self;
+	}
 	
 	protected Queue<OutputMessageQueue> lowPriorityOutputMessageQueue;
 	protected Queue<OutputMessageQueue> medPriorityOutputMessageQueue;
@@ -33,11 +47,11 @@ public abstract class GlobalOutputMessageQueue {
 	}
 	
 	/**
-	 * Add a message to the global queue.
+	 * Add a message to the global queue. 
 	 * 
 	 * @param message The message to be queued up.
 	 */
-	protected void enqueue(OutputMessageQueue message) {
+	protected synchronized void enqueue(OutputMessageQueue message) {
 		switch (message.getPriority()) {
 			case 0: lowPriorityOutputMessageQueue.add(message);
 					break;
@@ -52,7 +66,7 @@ public abstract class GlobalOutputMessageQueue {
 	 * @return The oldest message of the highest priority available, or NULL if the
 	 * queue is empty.
 	 */
-	protected OutputMessageQueue dequeue() {
+	protected synchronized OutputMessageQueue dequeue() {
 		try {
 			highPriorityOutputMessageQueue.remove();
 		} catch (NoSuchElementException noHigh) {
@@ -68,4 +82,3 @@ public abstract class GlobalOutputMessageQueue {
 	}
 	
 }
-

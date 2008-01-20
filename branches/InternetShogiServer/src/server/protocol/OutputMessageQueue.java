@@ -24,4 +24,14 @@ public class OutputMessageQueue extends MessageQueue {
 		this.messageQueue = new LinkedList<ProtocolMessage>();
 	}
 	
+	/**
+	 * Creates a new OutputMessageQueue containing a single ProtocolMessage.
+	 * @param message The first ProtocolMessage in this queue.
+	 */
+	public OutputMessageQueue(ProtocolMessage message) {
+		super();
+		this.messageQueue = new LinkedList<ProtocolMessage>();
+		messageQueue.add(message);
+	}
+	
 }

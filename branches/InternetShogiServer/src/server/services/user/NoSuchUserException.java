@@ -1,9 +1,15 @@
 package server.services.user;
 
+/**
+ * This Exception is thrown whenever a process attempts to access
+ * information about a User who does not exist on the server.
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class NoSuchUserException extends Throwable {
-
+	
 	private String userName;
-	private String message;
 
 	/* Satisfies the condition that extends Throwable (which
 	 * implements Serializable) specifices this value for
@@ -12,19 +18,22 @@ public class NoSuchUserException extends Throwable {
 	 */
 	private static final long serialVersionUID = 54091L;
 	
+	/**
+	 * Constructs a new NoSuchUserException.
+	 * 
+	 * @param userName The user name which was accessed, but which
+	 * does not exist on the server.
+	 */
 	public NoSuchUserException(String userName) {
 		this.userName = userName;
 	}
 	
-	public NoSuchUserException(String userName, String message) {
-		this.userName = userName;
-		this.message = message;
-	}
-	
-	public String getMessage() {
-		return message;
-	}
-	
+	/**
+	 * Get the accessed user name.
+	 * 
+	 * @return The user name which was accessed, but which
+	 * does not exist on the server.
+	 */
 	public String getName() { 
 		return userName;
 	}

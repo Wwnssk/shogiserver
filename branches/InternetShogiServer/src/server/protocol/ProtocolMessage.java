@@ -9,7 +9,6 @@ package server.protocol;
  */
 public class ProtocolMessage {
 
-	// $ANALYSIS-IGNORE
 	private String message = "";
 
 	/**
@@ -39,7 +38,6 @@ public class ProtocolMessage {
 	 * @return The first token of the message.
 	 */
 	public String getProtocolKey() {
-		// $ANALYSIS-IGNORE
 		return (message.length() == 0) ? "" : message.split(" ")[0];
 	}
 

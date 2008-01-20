@@ -25,6 +25,10 @@ public class InputMessageQueue extends MessageQueue {
 		priority = 1;
 	}
 	
+	/**
+	 * Creates a new InputMessageQueue containing a single ProtocolMessage.
+	 * @param message The first ProtocolMessage in this queue.
+	 */
 	public InputMessageQueue(ProtocolMessage message) {
 		super();
 		messageQueue = new LinkedList<ProtocolMessage>();
