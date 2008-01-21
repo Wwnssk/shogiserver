@@ -18,19 +18,47 @@ public class OutputMessageQueue extends MessageQueue {
 
 	/**
 	 * Creates a new OutputMessageQueue with no messages at all.
+	 * The priority defaults to 1.
 	 */
 	public OutputMessageQueue() {
 		super();
 		this.messageQueue = new LinkedList<ProtocolMessage>();
+		setPriority(1);
 	}
 	
 	/**
 	 * Creates a new OutputMessageQueue containing a single ProtocolMessage.
-	 * @param message The first ProtocolMessage in this queue.
+	 * @param message The first ProtocolMessage in this queue. The priority
+	 * defaults to 1.
 	 */
 	public OutputMessageQueue(ProtocolMessage message) {
 		super();
 		this.messageQueue = new LinkedList<ProtocolMessage>();
+		messageQueue.add(message);
+		setPriority(1);
+	}
+	
+	/**
+	 * Creates a new OutputMessageQueue with no messages at all.
+	 * 
+	 * @param priority The priority value for this OutputMessageQueue. 
+	 */
+	public OutputMessageQueue(int priority) {
+		super();
+		messageQueue = new LinkedList<ProtocolMessage>();
+		setPriority(priority);
+	}
+	
+	/**
+	 * Creates a new OutputMessageQueue containing a single ProtocolMessage.
+	 * 
+	 * @param message The first ProtocolMessage in this queue.
+	 * @param priority The priority value for this OutputMessageQueue.
+	 */
+	public OutputMessageQueue(ProtocolMessage message, int priority) {
+		super();
+		messageQueue = new LinkedList<ProtocolMessage>();
+		setPriority(priority);
 		messageQueue.add(message);
 	}
 	

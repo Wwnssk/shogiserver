@@ -53,6 +53,10 @@ public abstract class MessageQueue {
 	public ProtocolMessage dequeue() {
 		return messageQueue.poll();
 	}
+	
+	public void enqueue(ProtocolMessage message) {
+		messageQueue.add(message);
+	}
 
 	/**
 	 * Sets the priority of this Message Queue. The priority of a MessageQueue 

@@ -7,43 +7,81 @@ import org.junit.Test;
 public class ProtocolMessageTest {
 
 	@Test
-	public void testProtocolMessage() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testProtocolMessageString() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testGetProtocolKey() {
-		fail("Not yet implemented");
+		ProtocolMessage emptyMessage = new ProtocolMessage();
+		assertEquals(emptyMessage.getProtocolKey(), "");
+		ProtocolMessage aytMessage = new ProtocolMessage("  ayt  ");
+		assertEquals(aytMessage.getProtocolKey(), "ayt");
+		aytMessage.append("foo");
+		assertEquals(aytMessage.getProtocolKey(), "ayt");
 	}
 
 	@Test
 	public void testGetPayload() {
-		fail("Not yet implemented");
+		ProtocolMessage emptyMessage = new ProtocolMessage();
+		assertEquals(emptyMessage.getPayload(), "");
+		ProtocolMessage aytMessage = new ProtocolMessage("  ayt  ");
+		assertEquals(aytMessage.getPayload(), "");
+		aytMessage.append("  foo  ");
+		assertEquals(aytMessage.getPayload(), "foo");
+		aytMessage.append("bar");
+		assertEquals(aytMessage.getPayload(), "foo bar");
+		aytMessage.append("   b    a z        ");
+		assertEquals(aytMessage.getPayload(), "foo bar b a z");
 	}
 
 	@Test
 	public void testGetTokenizedPayload() {
-		fail("Not yet implemented");
+		ProtocolMessage emptyMessage = new ProtocolMessage();
+		assertEquals(emptyMessage.getTokenizedPayload().length, 0);
+		ProtocolMessage aytMessage = new ProtocolMessage("ayt  ");
+		assertEquals(aytMessage.getTokenizedPayload().length, 0);
+		aytMessage.append("  b  a    z  ");
+		assertEquals(aytMessage.getTokenizedPayload().length, 3);
+		assertEquals(aytMessage.getTokenizedPayload()[0], "b");
+		assertEquals(aytMessage.getTokenizedPayload()[1], "a");
+		assertEquals(aytMessage.getTokenizedPayload()[2], "z");
 	}
 
 	@Test
 	public void testGetMessage() {
-		fail("Not yet implemented");
+		ProtocolMessage emptyMessage = new ProtocolMessage();
+		assertEquals(emptyMessage.getMessage(), "");
+		emptyMessage.append("    ");
+		assertEquals(emptyMessage.getMessage(), "");
+		ProtocolMessage aytMessage = new ProtocolMessage("ayt");
+		assertEquals(aytMessage.getMessage(), "ayt");
+		aytMessage.append(" foo bar ");
+		assertEquals(aytMessage.getMessage(), "ayt foo bar");
+		aytMessage.append("  b   a z");
+		assertEquals(aytMessage.getMessage(), "ayt foo bar b a z");
 	}
 
 	@Test
 	public void testAppend() {
-		fail("Not yet implemented");
+		ProtocolMessage emptyMessage = new ProtocolMessage();
+		emptyMessage.append("            ");
+		assertEquals(emptyMessage.getMessage(), "");
+		assertEquals(emptyMessage.getTokenizedPayload().length, 0);
+		assertEquals(emptyMessage.append("    "), emptyMessage.getMessage());
+		ProtocolMessage aytMessage = new ProtocolMessage("ayt");
+		assertEquals(aytMessage.append("foo   bar   "), aytMessage.getMessage());
+		assertEquals(aytMessage.append("  b a         z"), aytMessage.getMessage());
 	}
 
 	@Test
 	public void testSetProtocolKey() {
-		fail("Not yet implemented");
+		ProtocolMessage emptyMessage = new ProtocolMessage();
+		assertEquals(emptyMessage.setProtocolKey(" foo  "), emptyMessage.getMessage());
+		assertEquals(emptyMessage.getProtocolKey(), "foo");
+		emptyMessage.setProtocolKey("bar");
+		assertEquals(emptyMessage.getProtocolKey(), "bar");
+		assertEquals(emptyMessage.getMessage(), "bar");
+		assertEquals(emptyMessage.getPayload(), "");
+		ProtocolMessage aytMessage = new ProtocolMessage("ayt");
+		assertEquals(aytMessage.setProtocolKey("foo"), "foo");
+		aytMessage.append("bar");
+		assertEquals(aytMessage.setProtocolKey("ayt"), "ayt bar");
 	}
 
 }

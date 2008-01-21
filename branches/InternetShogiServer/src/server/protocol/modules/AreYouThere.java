@@ -1,5 +1,7 @@
 package server.protocol.modules;
 
+import java.util.Properties;
+
 import server.protocol.OutputMessageQueue;
 import server.protocol.ProtocolMessage;
 
@@ -35,6 +37,14 @@ public class AreYouThere implements ProtocolModule {
 	
 	public String getVersion() {
 		return version;
+	}
+	
+	public void initialize(Properties properties) {
+		
+	}
+	
+	public void shutdown() {
+		
 	}
 	
 }

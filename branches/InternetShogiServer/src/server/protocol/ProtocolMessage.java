@@ -51,7 +51,7 @@ public class ProtocolMessage {
 	public String getPayload() {
 		if (message.split(" ").length < 2)
 			return "";
-		return message.substring(message.indexOf(' '));
+		return message.substring(message.indexOf(' ') + 1);
 	}
 
 	/**
@@ -84,16 +84,28 @@ public class ProtocolMessage {
 	}
 
 	/**
-	 * Adds a token to the end of the ProtocolMessage's payload. All leading and
-	 * trailing whitespace is removed from the token.
+	 * Adds token(s) to the end of the ProtocolMessage's payload. All leading and
+	 * trailing whitespace is removed from each token.
 	 * 
-	 * @param token
-	 *            A token to be added to the end of the payload of the message.
+	 * @param tokens
+	 *            A string of tokens to be added to the end of the payload of the 
+	 *            message.
 	 * @return The current message. Identical to calling
 	 *         <code>getMessage()</code>.
 	 */
-	public String append(String token) {
-		message += " " + token.trim();
+	public String append(String tokens) {
+		String[] tokensArray = tokens.trim().split("\\s+");
+		
+		// If we try to append the empty string, or a bunch of whitespace, then
+		// tokens.trim().split("\\s+") returns an array of length 1 containing
+		// the empty string. So do nothing. If we don't treat this as a special
+		// case, the main loop will add an unnecessary space to the message.
+		if (tokensArray[0].equals(""))
+			return message;
+		
+		for (int i = 0; i < tokensArray.length; i++) {
+			message += " " + tokensArray[i];
+		}
 		return message;
 	}
 
@@ -109,7 +121,7 @@ public class ProtocolMessage {
 	 *         <code>getMessage()</code>.
 	 */
 	public String setProtocolKey(String protocolKey) {
-		message = protocolKey.trim() + " " + getPayload();
+		message = protocolKey.trim() + (getPayload().length() == 0? "" : " ") + getPayload();
 		return message;
 	}
 

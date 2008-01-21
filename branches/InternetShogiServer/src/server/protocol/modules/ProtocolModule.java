@@ -1,7 +1,10 @@
 package server.protocol.modules;
 
+import java.util.Properties;
+
 import server.protocol.OutputMessageQueue;
 import server.protocol.ProtocolMessage;
+import server.services.InvalidServiceConfigurationException;
 
 /**
  * ProtocolModules are the building block of the ProtocolMap. Each module may
@@ -12,7 +15,7 @@ import server.protocol.ProtocolMessage;
  * @author Adrian Petrescu
  *
  */
-public interface ProtocolModule {
+interface ProtocolModule {
 
 	/**
 	 * Every ProtocolModule may register a string which denotes which
@@ -60,4 +63,24 @@ public interface ProtocolModule {
 	 */
 	public OutputMessageQueue parseMessage(ProtocolMessage message);
 	
+	/**
+	 * This method is called when the ProtocolModule is first loaded into the
+	 * map. It is guaranteed to be called exactly once for the lifetime of
+	 * the ProtocolModule.
+	 * 
+	 * @param properties A collection of configuration options (possibly empty)
+	 * that the ProtocolModule needs in order to function.
+	 * 
+	 * @throws InvalidProtocolConfigurationException Thrown if the provided
+	 * <code>Properties</code> has an invalid configuration set, or is missing
+	 * a required setting.
+	 */
+	void initialize(Properties properties) throws InvalidProtocolConfigurationException;
+	
+	/**
+	 * This method is called when this ProtocolModule is shutdown.. It is guaranteed
+	 * that it will only be called once per the lifetime of this service, and that
+	 * once it is called, no other messages will need to be parsed.
+	 */
+	void shutdown();
 }
