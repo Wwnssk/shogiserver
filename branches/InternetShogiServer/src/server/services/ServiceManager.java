@@ -17,6 +17,27 @@ import server.services.user.UserManager;
 public class ServiceManager {
 
 	private static ConcurrentHashMap<String, GlobalService> serviceList = new ConcurrentHashMap<String, GlobalService>();
+	private static ConcurrentHashMap<String, Properties> configurationList = new ConcurrentHashMap<String, Properties>();
+	
+	/**
+	 * Loads a Properties file as the configuration for the named service. Note that
+	 * this method has no effect if the named service has already been started - this
+	 * method <b>must</b> be called before the service is first used.
+	 * 
+	 * @param serviceName The service to configure.
+	 * @param properties The Properties file containing the appropriate configuration.
+	 * @return <code>true</code> if the service has not previously been started and loading
+	 * the configuration was successful. <code>falst</code> if the service was already started
+	 * and this configuration was useless.
+	 */
+	public boolean loadConfiguration(String serviceName, Properties properties) {
+		if (serviceList.containsKey(serviceName)) {
+			return false;
+		} else {
+			configurationList.put(serviceName, properties);
+			return true;
+		}
+	}
 	
 	/**
 	 * Get a GlobalService by name. This method should only be used for third-party 
@@ -43,7 +64,11 @@ public class ServiceManager {
 		if (!serviceList.containsKey(ConnectionManager.SERVICE_NAME)) {
 			ConnectionManager connectionManager = new ConnectionManager();
 			try {
-				connectionManager.initialize(new Properties());
+				if (configurationList.containsKey(ConnectionManager.SERVICE_NAME)) {
+					connectionManager.initialize(configurationList.get(ConnectionManager.SERVICE_NAME));
+				} else {
+					connectionManager.initialize(new Properties());
+				}
 			} catch (InvalidServiceConfigurationException e) {}
 			serviceList.put(ConnectionManager.SERVICE_NAME, connectionManager);
 		}
@@ -62,7 +87,12 @@ public class ServiceManager {
 		if (!serviceList.containsKey(UserManager.SERVICE_NAME)) {
 			UserManager userManager = new UserManager();
 			try {
-				userManager.initialize(new Properties());
+				if (configurationList.containsKey(UserManager.SERVICE_NAME)) {
+					userManager.initialize(configurationList.get(UserManager.SERVICE_NAME));
+				} else {
+					userManager.initialize(new Properties());
+
+				}
 			} catch (InvalidServiceConfigurationException e) {}
 			serviceList.put(UserManager.SERVICE_NAME, userManager);
 		}
