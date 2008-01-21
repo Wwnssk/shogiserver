@@ -30,7 +30,7 @@ public class ServiceManager {
 	 * the configuration was successful. <code>falst</code> if the service was already started
 	 * and this configuration was useless.
 	 */
-	public boolean loadConfiguration(String serviceName, Properties properties) {
+	public static boolean loadConfiguration(String serviceName, Properties properties) {
 		if (serviceList.containsKey(serviceName)) {
 			return false;
 		} else {
