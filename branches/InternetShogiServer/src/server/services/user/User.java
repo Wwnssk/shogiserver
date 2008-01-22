@@ -23,6 +23,15 @@ public class User {
 	  */
 	private User() {}
 	
+	public boolean equals(Object obj) {
+		return ((obj instanceof User)
+				&& ((User) obj).getUserName().equals(this.getUserName()));
+	}
+	
+	public int hashCode() {
+		return getUserName().hashCode();
+	}
+	
 	/**
 	 * Constructs a new instance of User.
 	 * 
