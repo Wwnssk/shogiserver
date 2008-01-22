@@ -46,7 +46,7 @@ public class ServiceManager {
 	 * @param serviceName The unique string identifying the desired GlobalService.
 	 * @return The named GlobalService.
 	 * @throws InvalidServiceException thrown if the named GlobalService has not been
-	 * succesfully registered.
+	 * successfully registered.
 	 */
 	public static GlobalService getService(String serviceName) throws InvalidServiceException {
 		return serviceList.get(serviceName);

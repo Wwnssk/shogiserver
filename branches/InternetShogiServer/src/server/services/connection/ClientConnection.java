@@ -54,7 +54,11 @@ public class ClientConnection {
 			while (connected) {
 				try {
 					String line = in.readLine();
-					clientConnection.messageRecieved(line);
+					if (line == null) {
+						connected = false;
+					} else {
+						clientConnection.messageRecieved(line);
+					}
 				} catch (IOException e) {
 					// An error occured, we'll let the server decide whether we
 					// should keep trying.
@@ -109,11 +113,9 @@ public class ClientConnection {
 	 * @throws IOException Thrown in case the ClientConnection was unable to
 	 * re-open the input or output streams from the socket.
 	 */
-	public ClientConnection(User user, Socket socket) throws IOException {
-		inputListener = new InputListener(this,
-				new BufferedReader(new InputStreamReader(socket
-						.getInputStream())));
-		out = new PrintWriter(socket.getOutputStream());
+	public ClientConnection(User user, BufferedReader in, PrintWriter out, Socket socket) throws IOException {
+		inputListener = new InputListener(this, in);
+		this.out = out;
 		currentlyWriting = false;
 		this.user = user;
 		this.socket = socket;
