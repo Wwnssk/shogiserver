@@ -195,7 +195,14 @@ public class ConnectionManager implements GlobalService {
 	 * <code>null</code> if not.
 	 */
 	public ClientConnection getUserConnection(User user) {
-		return connectionTable.get(user);
+		ClientConnection conn = connectionTable.get(user);
+		if (conn == null) {
+			try {
+				Thread.sleep(100);
+				conn = connectionTable.get(user);
+			} catch (InterruptedException e) {}
+		}
+		return conn;
 	}
 	
 	/**
