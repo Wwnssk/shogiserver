@@ -1,5 +1,7 @@
 package server.protocol;
 
+import server.services.user.User;
+
 /**
  * Represents a single protocol instruction, either from the client or the
  * server. It represents the smallest functional unit of the protocol.
@@ -10,6 +12,7 @@ package server.protocol;
 public class ProtocolMessage {
 
 	private String message = "";
+	private User user;
 
 	/**
 	 * Creates a new ProtocolMessage with an empty message. Its payload and
@@ -28,6 +31,42 @@ public class ProtocolMessage {
 	 */
 	public ProtocolMessage(String message) {
 		this.message = message.trim();
+	}
+
+	/**
+	 * Constructs a new ProtocolMessage with the associated User. If this
+	 * ProtocolMessage is placed in an InputMessageQueue, then <code>user</code>
+	 * will be considered to be the sender of this message. If this
+	 * ProtocolMessage is placed in an OutputMessageQueue, then
+	 * <code>user</code> will be considered the target recipient of this
+	 * message.
+	 * 
+	 * @param user
+	 *            The User who is either the sender or the recipient of this
+	 *            message.
+	 */
+	public ProtocolMessage(User user) {
+		this.user = user;
+	}
+
+	/**
+	 * Constructs a new ProtocolMessage containing the given message, and
+	 * associated with with the associated User. If this ProtocolMessage is
+	 * placed in an InputMessageQueue, then <code>user</code> will be
+	 * considered to be the sender of this message. If this ProtocolMessage is
+	 * placed in an OutputMessageQueue, then <code>user</code> will be
+	 * considered the target recipient of this message. The message will be
+	 * trimmed of leading and trailing whitespace.
+	 * 
+	 * @param user
+	 *            The User who is either the sender or the recipient of this
+	 *            message.
+	 * @param message
+	 *            The message to be stored.
+	 */
+	public ProtocolMessage(User user, String message) {
+		this.message = message.trim();
+		this.user = user;
 	}
 
 	/**
@@ -84,25 +123,25 @@ public class ProtocolMessage {
 	}
 
 	/**
-	 * Adds token(s) to the end of the ProtocolMessage's payload. All leading and
-	 * trailing whitespace is removed from each token.
+	 * Adds token(s) to the end of the ProtocolMessage's payload. All leading
+	 * and trailing whitespace is removed from each token.
 	 * 
 	 * @param tokens
-	 *            A string of tokens to be added to the end of the payload of the 
-	 *            message.
+	 *            A string of tokens to be added to the end of the payload of
+	 *            the message.
 	 * @return The current message. Identical to calling
 	 *         <code>getMessage()</code>.
 	 */
 	public String append(String tokens) {
 		String[] tokensArray = tokens.trim().split("\\s+");
-		
+
 		// If we try to append the empty string, or a bunch of whitespace, then
 		// tokens.trim().split("\\s+") returns an array of length 1 containing
 		// the empty string. So do nothing. If we don't treat this as a special
 		// case, the main loop will add an unnecessary space to the message.
 		if (tokensArray[0].equals(""))
 			return message;
-		
+
 		for (int i = 0; i < tokensArray.length; i++) {
 			message += " " + tokensArray[i];
 		}
@@ -121,8 +160,35 @@ public class ProtocolMessage {
 	 *         <code>getMessage()</code>.
 	 */
 	public String setProtocolKey(String protocolKey) {
-		message = protocolKey.trim() + (getPayload().length() == 0? "" : " ") + getPayload();
+		message = protocolKey.trim() + (getPayload().length() == 0 ? "" : " ")
+				+ getPayload();
 		return message;
+	}
+	
+	/**
+	 * Returns this message's associated User. If this ProtocolMessage is
+	 * placed in an InputMessageQueue, then <code>user</code> will be
+	 * considered to be the sender of this message. If this ProtocolMessage is
+	 * placed in an OutputMessageQueue, then <code>user</code> will be
+	 * considered the target recipient of this message.
+	 * 
+	 * @return The user who is either the sender or recipient of this message.
+	 */
+	public User getUser() {
+		return user;
+	}
+	
+	/**
+	 * Sets this message's associated User. If this ProtocolMessage is
+	 * placed in an InputMessageQueue, then <code>user</code> will be
+	 * considered to be the sender of this message. If this ProtocolMessage is
+	 * placed in an OutputMessageQueue, then <code>user</code> will be
+	 * considered the target recipient of this message.
+	 * 
+	 * @param user The user who is either the sender or recipient of this message.
+	 */
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }
