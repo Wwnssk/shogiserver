@@ -92,6 +92,7 @@ public class ClientConnection {
 			while (!messages.isEmpty()) {
 				String line = messages.dequeue().getMessage();
 				out.println(line);
+				out.flush();
 			}
 			clientConnection.messageSent();
 		}
