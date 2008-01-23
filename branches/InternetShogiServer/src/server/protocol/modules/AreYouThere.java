@@ -17,7 +17,7 @@ public class AreYouThere implements ProtocolModule {
 
 	public static final String name = "AreYouThere";
 	public static final String protocolKey = "ayt";
-	public static final String version = "0.1";
+	public static final String version = "0.01";
 
 	public OutputMessageQueue parseMessage(ProtocolMessage message) {
 		return new OutputMessageQueue(new ProtocolMessage("yes"));
