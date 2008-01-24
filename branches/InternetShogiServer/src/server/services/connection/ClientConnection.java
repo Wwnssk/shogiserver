@@ -121,7 +121,7 @@ public class ClientConnection {
 		this.user = user;
 		this.socket = socket;
 		keepConnected = true;
-		new Thread(inputListener).start();
+		new Thread(inputListener, "ClientListener: " + user.getUserName()).start();
 	}
 
 	/**
@@ -170,7 +170,7 @@ public class ClientConnection {
 			}
 		}
 		OutputListener clientWriter = new OutputListener(this, out, messages);
-		new Thread(clientWriter).start();
+		new Thread(clientWriter, "ClientWriter: " + user.getUserName()).start();
 		return true;
 	}
 

@@ -119,7 +119,7 @@ public class ConnectionManager implements GlobalService {
 		}
 		connectionTable = new ConcurrentHashMap<User, ClientConnection>();
 		ConnectionListener listener = new ConnectionListener(port);
-		new Thread(listener).start();
+		new Thread(listener, "ConnectionListener").start();
 	}
 	
 	/**

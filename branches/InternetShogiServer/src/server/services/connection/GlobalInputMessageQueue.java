@@ -80,4 +80,33 @@ public class GlobalInputMessageQueue {
 		return null;
 	}
 	
+	/**
+	 * Return the total number of input message queues still queued up
+	 * in the global buffer, of all priorities.
+	 * 
+	 * @return The total number of queued InputMessageStacks.
+	 */
+	protected int getSize() {
+		return lowPriorityInputMessageQueue.size() +
+				medPriorityInputMessageQueue.size() +
+				highPriorityInputMessageQueue.size();
+	}
+	
+	/**
+	 * Return the total number of input message queues still in the queue
+	 * with a given priority.
+	 * 
+	 * @param priority The priority level of counted messages.
+	 * @return The total number of queued InputMessageStacks of the given
+	 * priority.
+	 */
+	protected int getSize(int priority) {
+		switch (priority) {
+			case 0: return lowPriorityInputMessageQueue.size();
+			case 1: return medPriorityInputMessageQueue.size();
+			case 2: return highPriorityInputMessageQueue.size();
+			default: return 0;
+		}
+	}
+	
 }

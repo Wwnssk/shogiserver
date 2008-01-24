@@ -81,4 +81,34 @@ public class GlobalOutputMessageQueue {
 		return null;
 	}
 	
+	
+	/**
+	 * Return the total number of output message queues still queued up
+	 * in the global buffer, of all priorities.
+	 * 
+	 * @return The total number of queued OutputMessageStacks.
+	 */
+	protected int getSize() {
+		return lowPriorityOutputMessageQueue.size() +
+				medPriorityOutputMessageQueue.size() +
+				highPriorityOutputMessageQueue.size();
+	}
+	
+	/**
+	 * Return the total number of output message queues still in the queue
+	 * with a given priority.
+	 * 
+	 * @param priority The priority level of counted messages.
+	 * @return The total number of queued OutputMessageStacks of the given
+	 * priority.
+	 */
+	protected int getSize(int priority) {
+		switch (priority) {
+			case 0: return lowPriorityOutputMessageQueue.size();
+			case 1: return medPriorityOutputMessageQueue.size();
+			case 2: return highPriorityOutputMessageQueue.size();
+			default: return 0;
+		}
+	}
+	
 }
