@@ -68,13 +68,13 @@ public class GlobalOutputMessageQueue {
 	 */
 	public synchronized OutputMessageQueue dequeue() {
 		try {
-			highPriorityOutputMessageQueue.remove();
+			return highPriorityOutputMessageQueue.remove();
 		} catch (NoSuchElementException noHigh) {
 			try {
-				medPriorityOutputMessageQueue.remove();
+				return medPriorityOutputMessageQueue.remove();
 			} catch (NoSuchElementException noMed) {
 				try {
-					lowPriorityOutputMessageQueue.remove();
+					return lowPriorityOutputMessageQueue.remove();
 				} catch(NoSuchElementException noLow) {}
 			}
 		}

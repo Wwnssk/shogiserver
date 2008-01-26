@@ -67,13 +67,13 @@ public class GlobalInputMessageQueue {
 	 */
 	public synchronized InputMessageQueue dequeue() {
 		try {
-			highPriorityInputMessageQueue.remove();
+			return highPriorityInputMessageQueue.remove();
 		} catch (NoSuchElementException noHigh) {
 			try {
-				medPriorityInputMessageQueue.remove();
+				return medPriorityInputMessageQueue.remove();
 			} catch (NoSuchElementException noMed) {
 				try {
-					lowPriorityInputMessageQueue.remove();
+					return lowPriorityInputMessageQueue.remove();
 				} catch(NoSuchElementException noLow) {}
 			}
 		}
