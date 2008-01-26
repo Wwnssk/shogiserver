@@ -4,9 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class OutputMessageQueueTest {
+import server.services.protocol.OutputMessageQueue;
+import server.services.protocol.ProtocolMessage;
 
-	//TODO: Add some tests to ensure OutputMessageQueue's are threadsafe.
+public class OutputMessageQueueTest {
 	
 	@Test
 	public void testIsEmpty() {

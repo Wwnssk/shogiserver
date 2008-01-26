@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import server.protocol.OutputMessageQueue;
+import server.services.protocol.OutputMessageQueue;
 
 
 /**

@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import server.services.protocol.ProtocolMessage;
+
 public class ProtocolMessageTest {
 
 	@Test

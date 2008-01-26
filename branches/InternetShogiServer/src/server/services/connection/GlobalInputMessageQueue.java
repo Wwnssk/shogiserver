@@ -4,7 +4,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import server.protocol.InputMessageQueue;
+import server.services.protocol.InputMessageQueue;
 
 /**
  * A threadsafe global queue of all the messages received by all clients

@@ -6,7 +6,10 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import server.protocol.ProtocolMessage;
+import server.services.protocol.ProtocolMessage;
+import server.services.protocol.modules.AreYouThere;
+import server.services.protocol.modules.InvalidProtocolConfigurationException;
+import server.services.protocol.modules.ProtocolModule;
 
 public class AreYouThereTest {
 
