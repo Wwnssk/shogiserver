@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.Properties;
 
 import server.services.connection.ConnectionManager;
+import server.services.protocol.ProtocolManager;
 import server.services.user.UserManager;
 
 /**
@@ -73,6 +74,30 @@ public class ServiceManager {
 			serviceList.put(ConnectionManager.SERVICE_NAME, connectionManager);
 		}
 		return (ConnectionManager) serviceList.get(ConnectionManager.SERVICE_NAME);
+	}
+	
+	/**
+	 * Get access to the ProtocolManager service, which controls the ProtocolMap and
+	 * each individual ProtocolModule.
+	 * 
+	 * If the ProtocolManager has not been accessed before, it will be created now.
+	 * 
+	 * @return A reference to the ProtocolManager.
+	 */
+	public static ProtocolManager getProtocolManager() {
+		if (!serviceList.containsKey(ProtocolManager.SERVICE_NAME)) {
+			ProtocolManager protocolManager = new ProtocolManager();
+			try {
+				if (configurationList.containsKey(ProtocolManager.SERVICE_NAME)) {
+					protocolManager.initialize(configurationList.get(protocolManager.SERVICE_NAME));
+				} else {
+					protocolManager.initialize(new Properties());
+				}
+			} catch (InvalidServiceConfigurationException e) {
+				serviceList.put(ProtocolManager.SERVICE_NAME, protocolManager);
+			}
+		}
+		return (ProtocolManager) serviceList.get(ProtocolManager.SERVICE_NAME);
 	}
 	
 	/**
