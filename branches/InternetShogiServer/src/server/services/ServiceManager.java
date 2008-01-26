@@ -89,7 +89,7 @@ public class ServiceManager {
 			ProtocolManager protocolManager = new ProtocolManager();
 			try {
 				if (configurationList.containsKey(ProtocolManager.SERVICE_NAME)) {
-					protocolManager.initialize(configurationList.get(protocolManager.SERVICE_NAME));
+					protocolManager.initialize(configurationList.get(ProtocolManager.SERVICE_NAME));
 				} else {
 					protocolManager.initialize(new Properties());
 				}
