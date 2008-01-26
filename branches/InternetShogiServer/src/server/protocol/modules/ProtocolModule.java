@@ -15,7 +15,7 @@ import server.services.InvalidServiceConfigurationException;
  * @author Adrian Petrescu
  *
  */
-interface ProtocolModule {
+public interface ProtocolModule {
 
 	/**
 	 * Every ProtocolModule may register a string which denotes which
