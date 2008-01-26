@@ -46,7 +46,8 @@ public class Tell implements ProtocolModule {
 				response.setUser(ServiceManager.getUserManager().getUser(messageData[0]));
 			} else {
 				//TODO: Handle user logged off.
-				return null;
+				response.setUser(message.getUser());
+				response.append("invalid");
 			}
 		} catch (NoSuchUserException e) {
 			//TODO: Handle no such user.

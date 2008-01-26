@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import server.services.ServiceManager;
 import server.services.connection.ConnectionManager;
+import server.services.protocol.InputMessageQueue;
 import server.services.protocol.ProtocolManager;
 import server.services.user.UserManager;
 
@@ -38,14 +39,15 @@ public class Server {
 	
 	public void process() {
 		while (alive) {
-			if (inputQueue.isEmpty()) {
+			InputMessageQueue input = inputQueue.dequeue();
+			if (input == null) {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			} else {
-				protocolManager.parseMessages(inputQueue.dequeue());
+				protocolManager.parseMessages(input);
 			}
 		}
 	}

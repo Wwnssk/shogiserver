@@ -133,7 +133,7 @@ public class ClientConnection {
 	 * @param message The message sent by the client. 
 	 */
 	private synchronized void messageRecieved(String message) {
-		ProtocolMessage pMessage = new ProtocolMessage(message);
+		ProtocolMessage pMessage = new ProtocolMessage(user, message);
 		InputMessageQueue messageQueue = new InputMessageQueue(pMessage);
 		GlobalInputMessageQueue.getGlobalInputMessageQueue().enqueue(
 				messageQueue);

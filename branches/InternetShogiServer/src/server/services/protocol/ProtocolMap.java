@@ -91,7 +91,7 @@ public class ProtocolMap {
 			if (protocolMap.containsKey(message.getProtocolKey())) {
 				reply = protocolMap.get(message.getProtocolKey()).parseMessage(message);
 			} else {
-				ProtocolMessage invalid = new ProtocolMessage("invalid");
+				ProtocolMessage invalid = new ProtocolMessage(message.getUser(), "invalid");
 				invalid.append(message.getProtocolKey());
 				reply = new OutputMessageQueue(invalid);
 			}

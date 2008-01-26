@@ -20,7 +20,7 @@ public class AreYouThere implements ProtocolModule {
 	public static final String version = "0.01";
 
 	public OutputMessageQueue parseMessage(ProtocolMessage message) {
-		return new OutputMessageQueue(new ProtocolMessage("yes"));
+		return new OutputMessageQueue(new ProtocolMessage(message.getUser(), "yes"));
 	}
 	
 	public String[] getDependencies() {
