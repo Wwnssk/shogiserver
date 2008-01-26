@@ -1,4 +1,4 @@
-package server.services.connection;
+package server.main;
 
 import java.util.NoSuchElementException;
 import java.util.Queue;
@@ -51,7 +51,7 @@ public class GlobalOutputMessageQueue {
 	 * 
 	 * @param message The message to be queued up.
 	 */
-	protected synchronized void enqueue(OutputMessageQueue message) {
+	public synchronized void enqueue(OutputMessageQueue message) {
 		switch (message.getPriority()) {
 			case 0: lowPriorityOutputMessageQueue.add(message);
 					break;
@@ -66,7 +66,7 @@ public class GlobalOutputMessageQueue {
 	 * @return The oldest message of the highest priority available, or NULL if the
 	 * queue is empty.
 	 */
-	protected synchronized OutputMessageQueue dequeue() {
+	public synchronized OutputMessageQueue dequeue() {
 		try {
 			highPriorityOutputMessageQueue.remove();
 		} catch (NoSuchElementException noHigh) {
@@ -88,7 +88,7 @@ public class GlobalOutputMessageQueue {
 	 * 
 	 * @return The total number of queued OutputMessageStacks.
 	 */
-	protected int getSize() {
+	public int getSize() {
 		return lowPriorityOutputMessageQueue.size() +
 				medPriorityOutputMessageQueue.size() +
 				highPriorityOutputMessageQueue.size();
@@ -102,7 +102,7 @@ public class GlobalOutputMessageQueue {
 	 * @return The total number of queued OutputMessageStacks of the given
 	 * priority.
 	 */
-	protected int getSize(int priority) {
+	public int getSize(int priority) {
 		switch (priority) {
 			case 0: return lowPriorityOutputMessageQueue.size();
 			case 1: return medPriorityOutputMessageQueue.size();

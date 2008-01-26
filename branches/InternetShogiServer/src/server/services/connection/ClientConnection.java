@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+import server.main.GlobalInputMessageQueue;
 import server.services.protocol.InputMessageQueue;
 import server.services.protocol.OutputMessageQueue;
 import server.services.protocol.ProtocolMessage;

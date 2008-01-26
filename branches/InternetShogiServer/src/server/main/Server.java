@@ -4,8 +4,6 @@ import java.util.Properties;
 
 import server.services.ServiceManager;
 import server.services.connection.ConnectionManager;
-import server.services.connection.GlobalInputMessageQueue;
-import server.services.connection.GlobalOutputMessageQueue;
 import server.services.protocol.ProtocolManager;
 import server.services.user.UserManager;
 
