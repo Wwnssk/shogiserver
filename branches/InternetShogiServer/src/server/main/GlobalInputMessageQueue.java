@@ -87,9 +87,9 @@ public class GlobalInputMessageQueue {
 	 * @return The total number of queued InputMessageStacks.
 	 */
 	public int getSize() {
-		return lowPriorityInputMessageQueue.size() +
-				medPriorityInputMessageQueue.size() +
-				highPriorityInputMessageQueue.size();
+		return lowPriorityInputMessageQueue.size()
+			    + medPriorityInputMessageQueue.size()
+			    + highPriorityInputMessageQueue.size();
 	}
 	
 	/**
@@ -102,10 +102,47 @@ public class GlobalInputMessageQueue {
 	 */
 	public int getSize(int priority) {
 		switch (priority) {
-			case 0: return lowPriorityInputMessageQueue.size();
-			case 1: return medPriorityInputMessageQueue.size();
-			case 2: return highPriorityInputMessageQueue.size();
-			default: return 0;
+		case 0:
+			return lowPriorityInputMessageQueue.size();
+		case 1:
+			return medPriorityInputMessageQueue.size();
+		case 2:
+			return highPriorityInputMessageQueue.size();
+		default:
+			return 0;
+		}
+	}
+	
+	/**
+	 * Returns <code>true</code> if the queue contains no elements of any
+	 * priority.
+	 * 
+	 * @return <code>true</code> if the queue is completely empty.
+	 */
+	public boolean isEmpty() {
+		return lowPriorityInputMessageQueue.isEmpty()
+				&& medPriorityInputMessageQueue.isEmpty()
+				&& highPriorityInputMessageQueue.isEmpty();
+	}
+	
+	/**
+	 * Returns <code>true</code> if the queue contains no elements of the
+	 * given priority.
+	 * 
+	 * @param priority The priority level to check.
+	 * @return <code>true</code> if the queue is empty of messages of the given
+	 * priority.
+	 */
+	public boolean isEmpty(int priority) {
+		switch (priority) {
+		case 0:
+			return lowPriorityInputMessageQueue.isEmpty();
+		case 1:
+			return medPriorityInputMessageQueue.isEmpty();
+		case 2:
+			return highPriorityInputMessageQueue.isEmpty();
+		default:
+			return true;
 		}
 	}
 	

@@ -14,6 +14,7 @@ import java.net.Socket;
 import server.services.GlobalService;
 import server.services.ServiceManager;
 import server.services.InvalidServiceConfigurationException;
+import server.services.protocol.ProtocolMessage;
 import server.services.user.NoSuchUserException;
 import server.services.user.User;
 
@@ -113,7 +114,7 @@ public class ConnectionManager implements GlobalService {
 	 */
 	public void initialize(Properties properties) throws InvalidServiceConfigurationException {
 		try {
-			port = (Integer) properties.get("port");
+			port = Integer.parseInt((String) properties.get("port"));
 		} catch (NullPointerException e) {
 			throw new InvalidServiceConfigurationException(SERVICE_NAME, properties, "port");
 		}
@@ -139,7 +140,7 @@ public class ConnectionManager implements GlobalService {
 			String loginString = in.readLine();
 			
 			// Try MAX_RETRIES time to get the proper 'ping' connection request.
-			while (!loginString.equals("ping") && retries < MAX_RETRIES) {
+			while ((loginString == null || !loginString.equals("ping")) && retries < MAX_RETRIES) {
 				loginString = in.readLine();
 				retries++;
 			}

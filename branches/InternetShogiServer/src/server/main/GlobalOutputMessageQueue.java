@@ -111,4 +111,37 @@ public class GlobalOutputMessageQueue {
 		}
 	}
 	
+	/**
+	 * Returns <code>true</code> if the queue contains no elements of any
+	 * priority.
+	 * 
+	 * @return <code>true</code> if the queue is completely empty.
+	 */
+	public boolean isEmpty() {
+		return lowPriorityOutputMessageQueue.isEmpty()
+				&& medPriorityOutputMessageQueue.isEmpty()
+				&& highPriorityOutputMessageQueue.isEmpty();
+	}
+	
+	/**
+	 * Returns <code>true</code> if the queue contains no elements of the
+	 * given priority.
+	 * 
+	 * @param priority The priority level to check.
+	 * @return <code>true</code> if the queue is empty of messages of the given
+	 * priority.
+	 */
+	public boolean isEmpty(int priority) {
+		switch (priority) {
+		case 0:
+			return lowPriorityOutputMessageQueue.isEmpty();
+		case 1:
+			return medPriorityOutputMessageQueue.isEmpty();
+		case 2:
+			return highPriorityOutputMessageQueue.isEmpty();
+		default:
+			return true;
+		}
+	}
+	
 }

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
+import server.main.GlobalOutputMessageQueue;
 import server.services.GlobalService;
 import server.services.InvalidServiceConfigurationException;
 import server.services.protocol.modules.AreYouThere;
@@ -68,8 +69,9 @@ public class ProtocolManager implements GlobalService {
 		}
 	}
 
-	public OutputMessageQueue parseMessages(InputMessageQueue messages) {
-		return protocolMap.parseMessages(messages);
+	public void parseMessages(InputMessageQueue messages) {
+		GlobalOutputMessageQueue.getGlobalOutputMessageQueue().enqueue(
+				protocolMap.parseMessages(messages));
 	}
 
 	@Override

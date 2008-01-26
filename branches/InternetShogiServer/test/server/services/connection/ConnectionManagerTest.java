@@ -21,13 +21,13 @@ public class ConnectionManagerTest {
 
 	@Test
 	public void testSingleConnection() throws InterruptedException, UnknownHostException, IOException, NoSuchUserException {
-		int port = 54091;
+		String port = "54091";
 		Properties properties = new Properties();
 		properties.put("port", port);
 		ServiceManager.loadConfiguration(ConnectionManager.SERVICE_NAME, properties);
 		ConnectionManager cmgr = ServiceManager.getConnectionManager();
 		//Thread.sleep(1000);
-		Socket s = new Socket("localhost", port);
+		Socket s = new Socket("localhost", Integer.parseInt(port));
 		BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		PrintWriter out = new PrintWriter(s.getOutputStream());
 		out.println("ping");

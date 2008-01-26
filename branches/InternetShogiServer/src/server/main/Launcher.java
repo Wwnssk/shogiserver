@@ -54,6 +54,10 @@ public class Launcher {
 			}
 		}
 		System.out.println("Configuration loaded.");
+		
+		System.out.print("Starting server ... ");
+		Server server = new Server(databaseConfig, connectionConfig, userConfig, protocolConfig);
+		server.process();
 	}
 
 }

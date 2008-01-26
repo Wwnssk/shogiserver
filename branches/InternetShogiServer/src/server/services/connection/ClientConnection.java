@@ -79,22 +79,20 @@ public class ClientConnection {
 	class OutputListener implements Runnable {
 		private PrintWriter out;
 		private ClientConnection clientConnection;
-		private OutputMessageQueue messages;
+		private ProtocolMessage message;
 
 		private OutputListener(ClientConnection clientConnection,
-				PrintWriter out, OutputMessageQueue messages) {
+				PrintWriter out, ProtocolMessage message) {
 			this.clientConnection = clientConnection;
 			this.out = out;
-			this.messages = messages;
+			this.message = message;
 		}
 
 		public void run() {
 			clientConnection.currentlyWriting = true;
-			while (!messages.isEmpty()) {
-				String line = messages.dequeue().getMessage();
-				out.println(line);
-				out.flush();
-			}
+			String line = message.getMessage();
+			out.println(line);
+			out.flush();
 			clientConnection.messageSent();
 		}
 	}
@@ -151,7 +149,7 @@ public class ClientConnection {
 	}
 
 	/**
-	 * Sends an OutputMessageQueue to the client that this ClientConnection is
+	 * Sends a ProtocolMessage to the client that this ClientConnection is
 	 * connected to.
 	 * The messages are guaranteed to be sent consecutively in exactly the order
 	 * they were added to the OutputMessageQueue.
@@ -162,7 +160,7 @@ public class ClientConnection {
 	 * <code>try</code> does <i>not</i> necessarily mean that the message was succesfully
 	 * sent, only that the connection was still alive when it began sending.
 	 */
-	public synchronized boolean sendMessage(OutputMessageQueue messages) {
+	public synchronized boolean sendMessage(ProtocolMessage message) {
 		while (currentlyWriting) {
 			try {
 				Thread.sleep(100);
@@ -170,7 +168,7 @@ public class ClientConnection {
 				return false;
 			}
 		}
-		OutputListener clientWriter = new OutputListener(this, out, messages);
+		OutputListener clientWriter = new OutputListener(this, out, message);
 		new Thread(clientWriter, "ClientWriter: " + user.getUserName()).start();
 		return true;
 	}

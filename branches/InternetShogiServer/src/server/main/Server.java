@@ -18,7 +18,7 @@ public class Server {
 	
 	private volatile boolean alive = true;
 	
-	public Server(Properties databaseConfig, Properties connectionConfig,
+	protected Server(Properties databaseConfig, Properties connectionConfig,
 			Properties userConfig, Properties protocolConfig) {
 		
 		inputQueue = GlobalInputMessageQueue.getGlobalInputMessageQueue();
@@ -31,10 +31,22 @@ public class Server {
 		connectionManager = ServiceManager.getConnectionManager();
 		userManager = ServiceManager.getUserManager();
 		protocolManager = ServiceManager.getProtocolManager();
+		
+		OutputQueueProcessor outputQueueProcessor = new OutputQueueProcessor(connectionManager, outputQueue);
+		new Thread(outputQueueProcessor, "OutputQueueProcessor").start();
 	}
 	
 	public void process() {
 		while (alive) {
+			if (inputQueue.isEmpty()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			} else {
+				protocolManager.parseMessages(inputQueue.dequeue());
+			}
 		}
 	}
 
