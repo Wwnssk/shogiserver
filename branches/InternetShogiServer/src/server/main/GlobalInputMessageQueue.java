@@ -62,8 +62,19 @@ public class GlobalInputMessageQueue {
 					break;
 		}
 		if (unlockListener) {
-			Thread[] threads = new Thread[Thread.currentThread().getThreadGroup().activeCount()];
+			/* TODO: According to my experiments, main is always the first thread in
+			 * the main thread group, but I'm not sure if this is always
+			 * necessarily the case. Do more research here.
+			 * 
+			 * Assuming that it is saves time, but may cause deadlock if we're
+			 * wrong.
+			 * 
+			 * If you have definite knowledge about the likelihood of main not
+			 * being the first thread, please file a ticket!
+			 */
+			Thread[] threads = new Thread[1];
 			Thread.currentThread().getThreadGroup().enumerate(threads);
+			
 			if (threads[0].getName().equals("main")) {
 				threads[0].resume();
 			}
