@@ -70,7 +70,10 @@ public class ServiceManager {
 				} else {
 					connectionManager.initialize(new Properties());
 				}
-			} catch (InvalidServiceConfigurationException e) {}
+			} catch (InvalidServiceConfigurationException e) {
+				System.err.println(e.getMessage());
+				System.exit(-1);
+			}
 			serviceList.put(ConnectionManager.SERVICE_NAME, connectionManager);
 		}
 		return (ConnectionManager) serviceList.get(ConnectionManager.SERVICE_NAME);
@@ -94,7 +97,10 @@ public class ServiceManager {
 				} else {
 					protocolManager.initialize(new Properties());
 				}
-			} catch (InvalidServiceConfigurationException e) {}
+			} catch (InvalidServiceConfigurationException e) {
+				System.err.println(e.getMessage());
+				System.exit(-1);
+			}
 			serviceList.put(ProtocolManager.SERVICE_NAME, protocolManager);
 		}
 		return (ProtocolManager) serviceList.get(ProtocolManager.SERVICE_NAME);
@@ -118,7 +124,10 @@ public class ServiceManager {
 					userManager.initialize(new Properties());
 
 				}
-			} catch (InvalidServiceConfigurationException e) {}
+			} catch (InvalidServiceConfigurationException e) {
+				System.err.println(e.getMessage());
+				System.exit(-1);
+			}
 			serviceList.put(UserManager.SERVICE_NAME, userManager);
 		}
 		return (UserManager) serviceList.get(UserManager.SERVICE_NAME);
