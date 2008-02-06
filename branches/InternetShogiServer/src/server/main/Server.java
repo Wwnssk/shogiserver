@@ -37,15 +37,12 @@ public class Server {
 		new Thread(outputQueueProcessor, "OutputQueueProcessor").start();
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void process() {
 		while (alive) {
 			InputMessageQueue input = inputQueue.dequeue();
 			if (input == null) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				Thread.currentThread().suspend();
 			} else {
 				protocolManager.parseMessages(input);
 			}

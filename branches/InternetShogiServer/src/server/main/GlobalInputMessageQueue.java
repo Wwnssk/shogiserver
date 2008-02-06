@@ -50,7 +50,9 @@ public class GlobalInputMessageQueue {
 	 * 
 	 * @param message The message to be queued up.
 	 */
+	@SuppressWarnings("deprecation")
 	public synchronized void enqueue(InputMessageQueue message) {
+		boolean unlockListener = this.isEmpty();
 		switch (message.getPriority()) {
 			case 0: lowPriorityInputMessageQueue.add(message);
 					break;
@@ -58,6 +60,13 @@ public class GlobalInputMessageQueue {
 					break;
 			case 2: medPriorityInputMessageQueue.add(message);
 					break;
+		}
+		if (unlockListener) {
+			Thread[] threads = new Thread[Thread.currentThread().getThreadGroup().activeCount()];
+			Thread.currentThread().getThreadGroup().enumerate(threads);
+			if (threads[0].getName().equals("main")) {
+				threads[0].resume();
+			}
 		}
 	}
 	
@@ -119,7 +128,7 @@ public class GlobalInputMessageQueue {
 	 * 
 	 * @return <code>true</code> if the queue is completely empty.
 	 */
-	public boolean isEmpty() {
+	public synchronized boolean isEmpty() {
 		return lowPriorityInputMessageQueue.isEmpty()
 				&& medPriorityInputMessageQueue.isEmpty()
 				&& highPriorityInputMessageQueue.isEmpty();

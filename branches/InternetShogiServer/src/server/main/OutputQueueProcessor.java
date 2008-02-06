@@ -22,14 +22,11 @@ public class OutputQueueProcessor implements Runnable {
 		keepSending = false;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void run() {
 		while (keepSending) {
 			if (outputQueue.isEmpty()) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				Thread.currentThread().suspend();
 			} else {
 				OutputMessageQueue output = outputQueue.dequeue();
 				while (!output.isEmpty()) {

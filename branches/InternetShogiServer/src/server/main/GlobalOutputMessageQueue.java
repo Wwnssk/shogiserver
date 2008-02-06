@@ -51,7 +51,9 @@ public class GlobalOutputMessageQueue {
 	 * 
 	 * @param message The message to be queued up.
 	 */
+	@SuppressWarnings("deprecation")
 	public synchronized void enqueue(OutputMessageQueue message) {
+		boolean unlockListener = this.isEmpty();
 		switch (message.getPriority()) {
 			case 0: lowPriorityOutputMessageQueue.add(message);
 					break;
@@ -59,6 +61,16 @@ public class GlobalOutputMessageQueue {
 					break;
 			case 2: medPriorityOutputMessageQueue.add(message);
 					break;
+		}
+		if (unlockListener) {
+			Thread[] threads = new Thread[Thread.currentThread().getThreadGroup().activeCount()];
+			Thread.currentThread().getThreadGroup().enumerate(threads);
+			for (int i = 0; i < threads.length; i++) {
+				if (threads[i].getName().equals("OutputQueueProcessor")) {
+					threads[i].resume();
+					return;
+				}
+			}
 		}
 	}
 	
@@ -117,7 +129,7 @@ public class GlobalOutputMessageQueue {
 	 * 
 	 * @return <code>true</code> if the queue is completely empty.
 	 */
-	public boolean isEmpty() {
+	public synchronized boolean isEmpty() {
 		return lowPriorityOutputMessageQueue.isEmpty()
 				&& medPriorityOutputMessageQueue.isEmpty()
 				&& highPriorityOutputMessageQueue.isEmpty();
