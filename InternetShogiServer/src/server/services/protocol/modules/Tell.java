@@ -13,15 +13,6 @@ import server.services.user.NoSuchUserException;
  * the other user can see.
  * 
  * @author Adrian Petrescu
- *
- */
-/**
- * @author APetrescu
- *
- */
-/**
- * @author APetrescu
- *
  */
 public class Tell implements ProtocolModule {
 	private static final String name = "Tell";
