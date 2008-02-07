@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Great effort is made to fully document the server's API. The documentation is written in the JavaDoc format to allow for nicely formatted API documentation readable in the browser.
+Great effort is made to fully document the server's API. The documentation is written in the Javadoc format to allow for nicely formatted API documentation readable in the browser.
 
 This page contains instructions on building the Javadoc documentation from the code, as well as a link to prebuilt (and hopefully fairly up-to-date) documentation.
 
