@@ -14,7 +14,7 @@ You can build the Javadoc either through the Eclipse IDE, or from the command li
 
 == Using the Eclipse IDE ==
 
-Checkout the code from the Subversion repository using either the command-line tool, a [http://tortoisesvn.tigris.org/ graphical client], or the [http://subclipse.tigris.org/ Eclipse plugin]. Import the project into your workspace. Then go to *Project--Generate Javadoc*. Ensure that the entire `src/` directory of the InternetShogiServer project is checked. Choose the visibility level that you want. Hit *Finish* when the settings are to your liking. The Javadoc will be generated and the console output will tell you where to find it.
+Checkout the code from the Subversion repository using either the command-line tool, a [http://tortoisesvn.tigris.org/ graphical client], or the [http://subclipse.tigris.org/ Eclipse plugin]. Import the project into your workspace. Then go to *Project--Generate Javadoc*. Ensure that the entire `src/` directory of the !InternetShogiServer project is checked. Choose the visibility level that you want. Hit *Finish* when the settings are to your liking. The Javadoc will be generated and the console output will tell you where to find it.
 
 = Prebuilt =
 
