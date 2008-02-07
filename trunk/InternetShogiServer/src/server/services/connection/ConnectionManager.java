@@ -181,7 +181,7 @@ public class ConnectionManager implements GlobalService {
 	 * @return <code>true</code> if the given User is currently logged in, and
 	 * <code>false</code> if it is not.
 	 */
-	public boolean checkUserLoggedIn(User user) {
+	public synchronized boolean checkUserLoggedIn(User user) {
 		return connectionTable.containsKey(user);
 	}
 	
@@ -221,10 +221,12 @@ public class ConnectionManager implements GlobalService {
 	 * they log in again.
 	 * @param user The User to log out.
 	 */
-	public void disconnectUser(User user) {
+	public synchronized void disconnectUser(User user) {
 		ClientConnection userConnection = connectionTable.get(user);
 		connectionTable.remove(user);
-		userConnection.disconnect();
+		if (userConnection != null && userConnection.isConnected()) {			
+			userConnection.disconnect();
+		}
 	}
 
 }

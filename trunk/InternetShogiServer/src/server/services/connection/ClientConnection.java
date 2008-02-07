@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 import server.main.GlobalInputMessageQueue;
+import server.services.ServiceManager;
 import server.services.protocol.InputMessageQueue;
-import server.services.protocol.OutputMessageQueue;
 import server.services.protocol.ProtocolMessage;
 import server.services.user.User;
 
@@ -35,7 +35,6 @@ public class ClientConnection {
 		private BufferedReader in;
 		private boolean connected;
 		private ClientConnection clientConnection;
-
 		private InputListener(ClientConnection clientConnection,
 				BufferedReader in) {
 			this.clientConnection = clientConnection;
@@ -66,6 +65,7 @@ public class ClientConnection {
 					connected = clientConnection.connectionErrorOccured(e);
 				}
 			}
+			clientConnection.disconnect();
 		}
 	}
 
@@ -97,12 +97,15 @@ public class ClientConnection {
 		}
 	}
 
+	private static final int MAX_FAILURES = 3;
+
 	private boolean currentlyWriting;
 	private InputListener inputListener;
 	private PrintWriter out;
 	private User user;
 	private Socket socket;
 	private boolean keepConnected;
+	private int numFailures;
 
 	/**
 	 * Constructs a new ClientConnection over the given socket, associated with
@@ -154,7 +157,7 @@ public class ClientConnection {
 	 * The messages are guaranteed to be sent consecutively in exactly the order
 	 * they were added to the OutputMessageQueue.
 	 * 
-	 * @param message
+	 * @param message The message to queue up for sending.
 	 * @return Returns <code>false</code> if the connection was lost before the message 
 	 * could be sent, and <code>true</code> otherwise. Note that a return value of
 	 * <code>try</code> does <i>not</i> necessarily mean that the message was successfully
@@ -185,6 +188,10 @@ public class ClientConnection {
 	 * more input, and <code>false</code> if it should give up and close the input stream.
 	 */
 	private boolean connectionErrorOccured(IOException e) {
+		numFailures++;
+		if (numFailures > MAX_FAILURES) {
+			keepConnected = false;
+		}
 		return keepConnected;
 	}
 	
@@ -194,9 +201,20 @@ public class ClientConnection {
 	 */
 	protected void disconnect() {
 		keepConnected = false;
+		if (ServiceManager.getConnectionManager().checkUserLoggedIn(user)) {
+			ServiceManager.getConnectionManager().disconnectUser(user);
+		}
 		try {
 			socket.close();
 		} catch (IOException e) {}
+	}
+	
+	/**
+	 * Check whether the associated client still has a connection channel open.
+	 * @return <code>true</code> if there is still a connection, <code>false</code> otherwise.
+	 */
+	protected boolean isConnected() {
+		return keepConnected;
 	}
 	
 	/**

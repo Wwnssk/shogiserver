@@ -28,7 +28,7 @@ public class ServiceManager {
 	 * @param serviceName The service to configure.
 	 * @param properties The Properties file containing the appropriate configuration.
 	 * @return <code>true</code> if the service has not previously been started and loading
-	 * the configuration was successful. <code>falst</code> if the service was already started
+	 * the configuration was successful. <code>false</code> if the service was already started
 	 * and this configuration was useless.
 	 */
 	public static boolean loadConfiguration(String serviceName, Properties properties) {
