@@ -1,7 +1,5 @@
 package server.services.protocol.modules;
 
-import java.util.Properties;
-
 /**
  * This Exception is thrown when the server attempts to load a ProtocolModule
  * with missing or invalid dependencies.
@@ -15,7 +13,7 @@ public class ProtocolDependenciesNotMetException extends Throwable {
 	private String[] unmetDependencies;
 	
 	/* Satisfies the condition that extends Throwable (which
-	 * implements Serializable) specifices this value for
+	 * implements Serializable) specifies this value for
 	 * serialization purposes. It doesn't really matter what
 	 * we use here.
 	 */
@@ -25,10 +23,8 @@ public class ProtocolDependenciesNotMetException extends Throwable {
 	 * Constructs a new InvalidProtocolConfigurationException.
 	 * 
 	 * @param protocolModule The name of the ProtocolModule which threw this exception.
-	 * @param properties The <code>Properties</code> structure which contained an illegal
-	 * or absent configuration.
-	 * @param key The key of the setting which was either missing or absent from the
-	 * <code>Properties</code> structure.
+	 * @param unmetDependencies An array of all the dependencies (both name and version
+	 * number) that were not met.
 	 */
 	public ProtocolDependenciesNotMetException(String protocolModule, String[] unmetDependencies) {
 		this.protocolModule = protocolModule;
