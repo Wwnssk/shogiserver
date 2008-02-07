@@ -154,10 +154,10 @@ public class ClientConnection {
 	 * The messages are guaranteed to be sent consecutively in exactly the order
 	 * they were added to the OutputMessageQueue.
 	 * 
-	 * @param messages 
+	 * @param message
 	 * @return Returns <code>false</code> if the connection was lost before the message 
 	 * could be sent, and <code>true</code> otherwise. Note that a return value of
-	 * <code>try</code> does <i>not</i> necessarily mean that the message was succesfully
+	 * <code>try</code> does <i>not</i> necessarily mean that the message was successfully
 	 * sent, only that the connection was still alive when it began sending.
 	 */
 	public synchronized boolean sendMessage(ProtocolMessage message) {

@@ -2,7 +2,6 @@ package server.services.protocol.modules;
 
 import java.util.Properties;
 
-import server.services.InvalidServiceConfigurationException;
 import server.services.protocol.OutputMessageQueue;
 import server.services.protocol.ProtocolMessage;
 
