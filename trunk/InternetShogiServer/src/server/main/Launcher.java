@@ -7,6 +7,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Launcher is the main class. You start the server by executing this
+ * class' main method, optionally passing a valid configuration file as
+ * an argument. If no argument is present, it is assumed that the
+ * configuration file will be iss.conf in the project root.
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class Launcher {
 
 	private static final String defaultConfigFileName = "iss.conf";

@@ -5,6 +5,14 @@ import server.services.connection.ConnectionManager;
 import server.services.protocol.OutputMessageQueue;
 import server.services.protocol.ProtocolMessage;
 
+/**
+ * A thread that constantly monitors the GlobalOutputMessageQueue for
+ * new outgoing messages, and passes them to the appropriate ClientConnection
+ * for transfer over the network.
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class OutputQueueProcessor implements Runnable {
 
 	private GlobalOutputMessageQueue outputQueue;
@@ -18,10 +26,23 @@ public class OutputQueueProcessor implements Runnable {
 		keepSending = true;
 	}
 	
+	/**
+	 * Brings down the OutputQueueProcessor. No more messages will be sent,
+	 * and the GlobalOutputMessageQueue will only grow, not shrink. Once
+	 * this is called, the thread will die and will have to be recreated
+	 * before it can start working again.
+	 */
 	protected void stopSending() {
 		keepSending = false;
 	}
 	
+	/**
+	 * Begin processing the OutputQueue. Note that this thread does not
+	 * block on I/O; it is not actually responsible for doing the network send.
+	 * Once it has delegated the output to the appropriate ClientConnection,
+	 * it returns and goes to the next one and lets the ClientConnection waste
+	 * time doing the netwrok transfer.
+	 */
 	@SuppressWarnings("deprecation")
 	public void run() {
 		while (keepSending) {
