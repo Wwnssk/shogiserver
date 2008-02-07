@@ -52,6 +52,7 @@ public class ConnectionManagerTest {
 	@Test
 	public void testMultipleConnections() throws UnknownHostException, IOException, NoSuchUserException, InterruptedException {
 		int port = 54091;
+		Socket[] sockets = new Socket[101];
 		Properties properties = new Properties();
 		properties.put("port", port);
 		ServiceManager.loadConfiguration(ConnectionManager.SERVICE_NAME, properties);
@@ -59,6 +60,7 @@ public class ConnectionManagerTest {
 		
 		for (int i = 1; i <= 100; i++) {
 			Socket s = new Socket("localhost", port);
+			sockets[i] = s;
 			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			PrintWriter out = new PrintWriter(s.getOutputStream());
 			out.println("ping");
@@ -92,6 +94,7 @@ public class ConnectionManagerTest {
 		
 		for (int i = 1; i <= 100; i++) {
 			Socket s = new Socket("localhost", port);
+			sockets[i] = s;
 			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			PrintWriter out = new PrintWriter(s.getOutputStream());
 			out.println("ping");
