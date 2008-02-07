@@ -8,6 +8,14 @@ import server.services.protocol.InputMessageQueue;
 import server.services.protocol.ProtocolManager;
 import server.services.user.UserManager;
 
+/**
+ * This is the main Server component. It is the first piece to be brought
+ * up, and it is responsible for instantiating all the various GlobalService's,
+ * the global IO queues, and for listening and processing the input queue.
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class Server {
 
 	private ConnectionManager connectionManager;
@@ -37,6 +45,10 @@ public class Server {
 		new Thread(outputQueueProcessor, "OutputQueueProcessor").start();
 	}
 	
+	/**
+	 * Begin the cycle of constantly waiting for the input queue to have
+	 * data in it, and processing it.
+	 */
 	@SuppressWarnings("deprecation")
 	public void process() {
 		while (alive) {

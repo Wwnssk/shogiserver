@@ -19,6 +19,20 @@ public class AreYouThere implements ProtocolModule {
 	public static final String protocolKey = "ayt";
 	public static final String version = "0.01";
 
+	/**
+	 * An <code>ayt</code> message should not contain any parameters. A simply
+	 * "ayt" will be responded to with a simple "yes".
+	 * 
+	 * <br>
+	 * <b>Expected syntax:</b>
+	 * <br>
+	 * <code><i>ayt</i></code>
+	 * 
+	 * <br>
+	 * <b>Output syntax:</b>
+	 * <br>
+	 * <code><i>yes</i></code>
+	 */
 	public OutputMessageQueue parseMessage(ProtocolMessage message) {
 		return new OutputMessageQueue(new ProtocolMessage(message.getUser(), "yes"));
 	}
