@@ -33,7 +33,7 @@ public class ClientConnection {
 	 */
 	class InputListener implements Runnable {
 		private BufferedReader in;
-		private boolean connected;
+		private volatile boolean connected;
 		private ClientConnection clientConnection;
 		private InputListener(ClientConnection clientConnection,
 				BufferedReader in) {
@@ -99,13 +99,13 @@ public class ClientConnection {
 
 	private static final int MAX_FAILURES = 3;
 
-	private boolean currentlyWriting;
+	private volatile boolean currentlyWriting;
 	private InputListener inputListener;
 	private PrintWriter out;
 	private User user;
 	private Socket socket;
-	private boolean keepConnected;
-	private int numFailures;
+	private volatile boolean keepConnected;
+	private volatile int numFailures;
 
 	/**
 	 * Constructs a new ClientConnection over the given socket, associated with
