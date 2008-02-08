@@ -7,6 +7,7 @@ import server.services.connection.ConnectionManager;
 import server.services.protocol.InputMessageQueue;
 import server.services.protocol.ProtocolManager;
 import server.services.user.UserManager;
+import server.services.database.DatabaseManager;
 
 /**
  * This is the main Server component. It is the first piece to be brought
@@ -21,6 +22,7 @@ public class Server {
 	private ConnectionManager connectionManager;
 	private UserManager userManager;
 	private ProtocolManager protocolManager;
+	private DatabaseManager databaseManager;
 	
 	private GlobalInputMessageQueue inputQueue;
 	private GlobalOutputMessageQueue outputQueue;
@@ -36,7 +38,9 @@ public class Server {
 		ServiceManager.loadConfiguration(ConnectionManager.SERVICE_NAME, connectionConfig);
 		ServiceManager.loadConfiguration(UserManager.SERVICE_NAME, userConfig);
 		ServiceManager.loadConfiguration(ProtocolManager.SERVICE_NAME, protocolConfig);
+		ServiceManager.loadConfiguration(DatabaseManager.SERVICE_NAME, databaseConfig);
 		
+		databaseManager = ServiceManager.getDatabaseManager();
 		connectionManager = ServiceManager.getConnectionManager();
 		userManager = ServiceManager.getUserManager();
 		protocolManager = ServiceManager.getProtocolManager();
