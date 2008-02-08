@@ -41,7 +41,7 @@ public class OutputQueueProcessor implements Runnable {
 	 * block on I/O; it is not actually responsible for doing the network send.
 	 * Once it has delegated the output to the appropriate ClientConnection,
 	 * it returns and goes to the next one and lets the ClientConnection waste
-	 * time doing the netwrok transfer.
+	 * time doing the network transfer.
 	 */
 	@SuppressWarnings("deprecation")
 	public void run() {
