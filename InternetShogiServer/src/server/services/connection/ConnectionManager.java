@@ -154,10 +154,30 @@ public class ConnectionManager implements GlobalService {
 				out.flush();
 				loginString = in.readLine();
 				if (loginString.startsWith("login ") && loginString.split(" ").length == 3) {
-					//TODO: Check password.
-					User user = ServiceManager.getUserManager().getUser(loginString.split(" ")[1]);
-					ClientConnection c = new ClientConnection(user, in, out, socket);
-					connectionTable.put(user, c);
+					User user = null;
+					try {
+						user = ServiceManager.getUserManager().getUser(loginString.split(" ")[1]);
+						if (!ServiceManager.getDatabaseManager().validateLogin(
+								loginString.split(" ")[1],
+								loginString.split(" ")[2])) {
+							out.println("invalid password");
+							out.flush();
+							out.close();
+							in.close();
+							socket.close();
+							user = null;
+						}
+					} catch (NoSuchUserException e) {
+						out.println("invalid login");
+						out.flush();
+						out.close();
+						in.close();
+						socket.close();
+					}
+					if (user != null) {
+						ClientConnection c = new ClientConnection(user, in, out, socket);
+						connectionTable.put(user, c);
+					}
 				} else {
 					in.close();
 					out.close();
@@ -165,9 +185,6 @@ public class ConnectionManager implements GlobalService {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (NoSuchUserException e) {
-			// TODO: Register the new user
 			e.printStackTrace();
 		}
 	}

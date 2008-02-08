@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import server.services.GlobalService;
 import server.services.InvalidServiceConfigurationException;
+import server.services.ServiceManager;
 
 /**
  * This GlobalService is one of the core services of the server. It maintains
@@ -39,6 +40,13 @@ public class UserManager implements GlobalService {
 	 */
 	public void initialize(Properties properties) throws InvalidServiceConfigurationException {
 		userTable = new HashMap<String, User>();
+		
+		// Load up every user from the database.
+		String[] userNames = ServiceManager.getDatabaseManager().getRegisteredUsers();
+		for (int i = 0; i < userNames.length; i++) {
+			User user = new User(userNames[i]);
+			userTable.put(user.getUserName(), user);
+		}
 	}
 	
 	/**
@@ -58,11 +66,12 @@ public class UserManager implements GlobalService {
 	 * with the server.
 	 */
 	public User getUser(String userName) throws NoSuchUserException {
-		//TODO: Get user information from database
-		// For now, it just creates the user. THIS WILL NOT LAST!
-		
-		userTable.put(userName, new User(userName));
-		return userTable.get(userName);
+		User user = userTable.get(userName);
+		if (user == null) {
+			throw new NoSuchUserException(userName);
+		} else {
+			return user;
+		}
 	}
 
 }

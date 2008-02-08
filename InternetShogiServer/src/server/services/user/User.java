@@ -1,5 +1,7 @@
 package server.services.user;
 
+import server.services.ServiceManager;
+
 /**
  * This class represents a unique User that has registered
  * with the server, and has an associated name, personal 
@@ -39,6 +41,7 @@ public class User {
 	 */
 	protected User(String userName) {
 		this.userName = userName;
+		this.info = ServiceManager.getDatabaseManager().getUserInfo(this);
 	}
 	
 	/**
@@ -57,9 +60,6 @@ public class User {
 	 * data about the user.
 	 */
 	public UserInformation getUserInformation() {
-		if (info == null) {
-			info = new UserInformation(userName);
-		}
 		return info;
 	}
 	

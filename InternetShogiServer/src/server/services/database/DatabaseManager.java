@@ -2,6 +2,7 @@ package server.services.database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import server.services.GlobalService;
@@ -89,6 +90,45 @@ public class DatabaseManager implements GlobalService {
 			System.err.println(e.getMessage());
 		}
 		return userInfo;
+	}
+	
+	/**
+	 * Get a list of all registered users.
+	 * 
+	 * @return An array containing the UserName of every user in the database.
+	 */
+	public String[] getRegisteredUsers() {
+		ResultSet rs = engine.getAllUserNames();
+		ArrayList<String> names = new ArrayList<String>();
+		try {
+			while (rs.next()) {
+				names.add(rs.getString("userName"));
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return (String[]) names.toArray();
+	}
+	
+	/**
+	 * Checks a user's login credentials to make sure the given user name and
+	 * password match what is in the database.
+	 * 
+	 * @param userName The userName of the user attempting to log in.
+	 * @param password The attempted password.
+	 * @return <code>true</code> if the provided password was correct for the
+	 * given user, and <code>false</code> otherwise.
+	 */
+	public boolean validateLogin(String userName, String password) {
+		ResultSet rs = engine.getUserRow(userName);
+		try {
+			rs.next();
+			String correctPassword = rs.getString("password");
+			return password.equals(correctPassword);
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 		
 	@Override

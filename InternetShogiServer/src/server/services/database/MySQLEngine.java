@@ -38,15 +38,45 @@ public class MySQLEngine implements DatabaseEngine {
 	}
 	
 	public ResultSet getUserRow(String userName) {
+		if (!validateAlphanumericToken(userName)) {
+			return null;
+		}
+		
 		String userQuery = "SELECT * FROM Users WHERE userName = '" + userName + "';";
+		return executeQuery(userQuery);
+	}
+	
+	public ResultSet getAllUserNames() {
+		String userQuery = "SELECT userName FROM Users;";
+		return executeQuery(userQuery);
+	}
+	
+	private synchronized ResultSet executeQuery(String query) {
 		try {
 			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(userQuery);
+			ResultSet rs = stmt.executeQuery(query);
 			return rs;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	/**
+	 * Verifies that a single token is alphanumeric. In particular, it will contain
+	 * no " or ' or ) or ; characters, which would be a target for SQL injections.
+	 * 
+	 * @param token The token to be validated.
+	 * @return <code>true</code> if every character in token is alphanumeric, and
+	 * <code>false</code> otherwise.
+	 */
+	private boolean validateAlphanumericToken(String token) {
+		for (int i = 0; i < token.length(); i++) {
+			if (!Character.isLetterOrDigit(token.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	@Override
