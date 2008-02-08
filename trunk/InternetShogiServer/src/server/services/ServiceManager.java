@@ -6,6 +6,7 @@ import java.util.Properties;
 import server.services.connection.ConnectionManager;
 import server.services.protocol.ProtocolManager;
 import server.services.user.UserManager;
+import server.services.database.DatabaseManager;
 
 /**
  * The ServiceManager is one of the server's key subsystems. It is responsible for
@@ -122,7 +123,6 @@ public class ServiceManager {
 					userManager.initialize(configurationList.get(UserManager.SERVICE_NAME));
 				} else {
 					userManager.initialize(new Properties());
-
 				}
 			} catch (InvalidServiceConfigurationException e) {
 				System.err.println(e.getMessage());
@@ -133,4 +133,22 @@ public class ServiceManager {
 		return (UserManager) serviceList.get(UserManager.SERVICE_NAME);
 	}
 	
+	public static DatabaseManager getDatabaseManager() {
+		if (!serviceList.containsKey(DatabaseManager.SERVICE_NAME)) {
+			DatabaseManager databaseManager = new DatabaseManager();
+			try {
+				if (configurationList.containsKey(DatabaseManager.SERVICE_NAME)) {
+					databaseManager.initialize(configurationList.get(DatabaseManager.SERVICE_NAME));
+				} else {
+					databaseManager.initialize(new Properties());
+				}
+			} catch (InvalidServiceConfigurationException e) {
+				System.err.println(e.getMessage());
+				System.exit(-1);
+			}
+			serviceList.put(DatabaseManager.SERVICE_NAME, databaseManager);
+		}
+		return (DatabaseManager) serviceList.get(DatabaseManager.SERVICE_NAME);
+	}
+
 }
