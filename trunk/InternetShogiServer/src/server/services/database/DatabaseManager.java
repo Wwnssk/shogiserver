@@ -70,6 +70,13 @@ public class DatabaseManager implements GlobalService {
 		
 	}
 	
+	/**
+	 * Get a UserInformation structure populated with data about the given
+	 * user.
+	 * 
+	 * @param user The user whose information to retrieve.
+	 * @return A fully populated UserInformation structure.
+	 */
 	public UserInformation getUserInfo(User user) {
 		ResultSet rs = engine.getUserRow(user.getUserName());
 		UserInformation userInfo = new UserInformation(user.getUserName());
