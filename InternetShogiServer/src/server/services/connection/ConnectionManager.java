@@ -11,9 +11,11 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import server.main.GlobalInputMessageQueue;
 import server.services.GlobalService;
 import server.services.ServiceManager;
 import server.services.InvalidServiceConfigurationException;
+import server.services.protocol.InputMessageQueue;
 import server.services.protocol.ProtocolMessage;
 import server.services.user.NoSuchUserException;
 import server.services.user.User;
@@ -167,8 +169,7 @@ public class ConnectionManager implements GlobalService {
 							in.close();
 							socket.close();
 							user = null;
-						}
-						
+						} else		
 						// Make sure the user isn't already logged in.
 						if (checkUserLoggedIn(user)) {
 							out.println("login invalid already_connected");
@@ -190,6 +191,10 @@ public class ConnectionManager implements GlobalService {
 					if (user != null) {
 						ClientConnection c = new ClientConnection(user, in, out, socket);
 						connectionTable.put(user, c);
+						
+						// Send the user the motd.
+						GlobalInputMessageQueue.getGlobalInputMessageQueue().enqueue(
+								new InputMessageQueue(new ProtocolMessage(user, "motd")));
 					}
 					
 				} else {

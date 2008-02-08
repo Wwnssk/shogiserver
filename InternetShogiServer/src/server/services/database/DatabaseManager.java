@@ -117,7 +117,9 @@ public class DatabaseManager implements GlobalService {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return (String[]) names.toArray();
+		String[] nameArray = new String[names.size()];
+		names.toArray(nameArray);
+		return nameArray;
 	}
 	
 	/**

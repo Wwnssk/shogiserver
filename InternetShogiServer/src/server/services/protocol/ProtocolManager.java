@@ -60,10 +60,10 @@ public class ProtocolManager implements GlobalService {
 			ProtocolDependenciesNotMetException,
 			InvalidProtocolConfigurationException {
 		Properties moduleProperties = new Properties();
-		if (properties.containsKey(module.getName() + configFileSuffix)) {
+		if (properties.containsKey(module.getKey() + configFileSuffix)) {
 			BufferedReader in = new BufferedReader(new FileReader(new File(
 					(String) properties
-							.get(module.getName() + configFileSuffix))));
+							.get(module.getKey() + configFileSuffix))));
 			moduleProperties.load(in);
 			in.close();
 		}

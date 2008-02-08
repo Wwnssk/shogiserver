@@ -66,6 +66,7 @@ public class Launcher {
 		
 		System.out.print("Starting server ... ");
 		Server server = new Server(databaseConfig, connectionConfig, userConfig, protocolConfig);
+		System.out.println("done!");
 		server.process();
 	}
 
