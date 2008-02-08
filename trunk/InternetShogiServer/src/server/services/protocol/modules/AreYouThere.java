@@ -20,7 +20,7 @@ public class AreYouThere implements ProtocolModule {
 	public static final String version = "0.01";
 
 	/**
-	 * An <code>ayt</code> message should not contain any parameters. A simply
+	 * An <code>ayt</code> message should not contain any parameters. A simple
 	 * "ayt" will be responded to with a simple "yes".
 	 * 
 	 * <br>
