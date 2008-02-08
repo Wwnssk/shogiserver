@@ -68,8 +68,9 @@ public class MessageOfTheDay implements ProtocolModule {
 	}
 
 	/**
-	 * An <code>ayt</code> message should not contain any parameters. A simply
-	 * "ayt" will be responded to with a simple "yes".
+	 * A <code>motd</code> message should not contain any parameters. A simple
+	 * "motd" will be responded to with a series of "motd message *message*" responses
+	 * until the full message has been transmitted, followed by a "motd done".
 	 * 
 	 * <br>
 	 * <b>Expected syntax:</b>
