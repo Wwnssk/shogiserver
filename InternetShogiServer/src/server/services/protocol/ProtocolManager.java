@@ -12,6 +12,7 @@ import server.services.GlobalService;
 import server.services.InvalidServiceConfigurationException;
 import server.services.protocol.modules.AreYouThere;
 import server.services.protocol.modules.InvalidProtocolConfigurationException;
+import server.services.protocol.modules.MessageOfTheDay;
 import server.services.protocol.modules.ProtocolDependenciesNotMetException;
 import server.services.protocol.modules.ProtocolModule;
 import server.services.protocol.modules.Tell;
@@ -64,6 +65,7 @@ public class ProtocolManager implements GlobalService {
 					(String) properties
 							.get(module.getName() + configFileSuffix))));
 			moduleProperties.load(in);
+			in.close();
 		}
 
 		protocolMap.loadProtocolModule(module, moduleProperties);
@@ -93,7 +95,7 @@ public class ProtocolManager implements GlobalService {
 		try {
 			loadProtocolModule(ayt, properties);
 		} catch (Throwable e) {
-			throw new InvalidServiceConfigurationException(ayt.getName(),
+			throw new InvalidServiceConfigurationException(SERVICE_NAME,
 					properties, ayt.getKey());
 		}
 
@@ -102,8 +104,17 @@ public class ProtocolManager implements GlobalService {
 		try {
 			loadProtocolModule(tell, properties);
 		} catch (Throwable e) {
-			throw new InvalidServiceConfigurationException(tell.getName(),
+			throw new InvalidServiceConfigurationException(SERVICE_NAME,
 					properties, tell.getKey());
+		}
+		
+		/* Load MessageOfTheDay module */
+		ProtocolModule motd = new MessageOfTheDay();
+		try {
+			loadProtocolModule(motd, properties);
+		} catch (Throwable e) {
+			throw new InvalidServiceConfigurationException(SERVICE_NAME,
+					properties, motd.getKey());
 		}
 	}
 
