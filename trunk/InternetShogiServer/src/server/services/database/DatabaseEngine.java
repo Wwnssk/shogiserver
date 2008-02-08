@@ -59,4 +59,13 @@ interface DatabaseEngine {
 	 * or <code>null</code> if it could not be found.
 	 */
 	public ResultSet getUserRow(String userName);
+	
+	/**
+	 * Get the entire userName column of the Users table.
+	 * 
+	 * @return A ResultSet with a row containing the userName of each registered
+	 * user.
+	 */
+	public ResultSet getAllUserNames();
+	
 }
