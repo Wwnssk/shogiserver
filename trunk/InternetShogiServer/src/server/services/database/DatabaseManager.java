@@ -10,6 +10,15 @@ import server.services.InvalidServiceConfigurationException;
 import server.services.user.User;
 import server.services.user.UserInformation;
 
+/**
+ * This GlobalService is one of the core services of the system. It
+ * maintains the connection with the database, and is responsible for
+ * retrieving and persisting info back and forth between the database
+ * engine and the server.
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class DatabaseManager implements GlobalService {
 
 	public static final String SERVICE_NAME = "DatabaseManager";

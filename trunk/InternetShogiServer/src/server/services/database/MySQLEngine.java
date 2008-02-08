@@ -6,7 +6,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-
+/**
+ * This DatabaseEngine interfaces with a MySQL database, on either a local
+ * or remote server. It was tested with MySQL 5.0, but should work on any
+ * release.
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class MySQLEngine implements DatabaseEngine {
 
 	Connection conn;
