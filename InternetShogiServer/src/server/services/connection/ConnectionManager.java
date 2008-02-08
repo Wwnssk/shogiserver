@@ -132,7 +132,6 @@ public class ConnectionManager implements GlobalService {
 	 * @param socket A socket connection to the prospective client.
 	 */
 	private void newConnection(Socket socket) {
-		// TODO: Make sure user isn't logging in twice.
 		try {
 			int retries = 0;
 			BufferedReader in = new BufferedReader(new InputStreamReader (socket.getInputStream()));
@@ -157,10 +156,22 @@ public class ConnectionManager implements GlobalService {
 					User user = null;
 					try {
 						user = ServiceManager.getUserManager().getUser(loginString.split(" ")[1]);
+						
+						// Make sure it's a valid password.
 						if (!ServiceManager.getDatabaseManager().validateLogin(
 								loginString.split(" ")[1],
 								loginString.split(" ")[2])) {
-							out.println("invalid password");
+							out.println("login invalid password");
+							out.flush();
+							out.close();
+							in.close();
+							socket.close();
+							user = null;
+						}
+						
+						// Make sure the user isn't already logged in.
+						if (checkUserLoggedIn(user)) {
+							out.println("login invalid already_connected");
 							out.flush();
 							out.close();
 							in.close();
@@ -168,16 +179,19 @@ public class ConnectionManager implements GlobalService {
 							user = null;
 						}
 					} catch (NoSuchUserException e) {
-						out.println("invalid login");
+						out.println("login invalid register");
 						out.flush();
 						out.close();
 						in.close();
 						socket.close();
 					}
+					
+					// The gauntlet has been run, it's safe to log the user in now.
 					if (user != null) {
 						ClientConnection c = new ClientConnection(user, in, out, socket);
 						connectionTable.put(user, c);
 					}
+					
 				} else {
 					in.close();
 					out.close();
