@@ -10,9 +10,16 @@ import server.services.protocol.modules.InvalidProtocolConfigurationException;
 import server.services.protocol.modules.ProtocolModule;
 import server.services.user.User;
 
-//TODO: Add Javadoc to room-related classes
-//TODO: Handle multi-token room names
 
+/**
+ * The RoomManager, in spite of its name, is a ProtocolModule rather
+ * than a GlobalService. It handles the "room" protocol key, and is 
+ * generally responsible for creating, removing, managing, and hosting
+ * the rooms on the server.
+ * 
+ * @author APetrescu
+ *
+ */
 public class RoomManager implements ProtocolModule {
 
 	private static final String name = "Room";
@@ -66,9 +73,15 @@ public class RoomManager implements ProtocolModule {
 		}
 	}
 
+	/**
+	 * Returns a simple <code>room invalid syntax</code> message queue.
+	 * @param message The invalid message. The reply will be addressed to the
+	 * same user.
+	 * @return The <code>room invalid syntax</code> message queue.
+	 */
 	private OutputMessageQueue invalidSyntaxMessage(ProtocolMessage message) {
 		return new OutputMessageQueue(new ProtocolMessage(message.getUser(),
-				getKey() + " syntax"));
+				getKey() + " invalid syntax"));
 	}
 
 	@Override
@@ -76,10 +89,12 @@ public class RoomManager implements ProtocolModule {
 		String[] messagePayload = message.getTokenizedPayload();
 
 		switch (messagePayload.length) {
-		case 0:
-			return new OutputMessageQueue(new ProtocolMessage(
-					message.getUser(), getKey() + " invalid"));
-			
+		case 0: break;
+		
+		/*
+		 * Possibilities:
+		 * room list
+		 */
 		case 1:
 			if (messagePayload[0].equals("list")) {
 				OutputMessageQueue roomListMessageQueue = new OutputMessageQueue();
@@ -94,6 +109,12 @@ public class RoomManager implements ProtocolModule {
 			}
 			break;
 			
+		/*
+		 * Possibilities:
+		 * room info _roomname_
+		 * room join _roomname_
+		 * room leave _roomname_
+		 */
 		case 2:
 			if (messagePayload[0].equals("info")) {
 				OutputMessageQueue roomInfoMessageQueue = getRoomInfoMessage(messagePayload[1]);

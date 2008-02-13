@@ -1,5 +1,15 @@
 package server.services.protocol.modules.room;
 
+/**
+ * A class representing a table of data about the room. The information
+ * is accessed and cached on a per-need basis, so constant time is not
+ * guaranteed at all for many of these operations. Often the structure is
+ * going to the database to obtain them (although they will likely be
+ * cached on future accesses).
+ * 
+ * @author Adrian Petrescu
+ *
+ */
 public class RoomInformation {
 
 	private String description;

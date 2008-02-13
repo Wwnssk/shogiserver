@@ -44,6 +44,16 @@ public class MySQLEngine implements DatabaseEngine {
 		conn.close();
 	}
 	
+	@Override
+	public boolean checkConnected() {
+		try {
+			return conn.isValid(10);
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+	
+	@Override
 	public ResultSet getUserRow(String userName) {
 		if (!validateAlphanumericToken(userName)) {
 			return null;
@@ -53,27 +63,42 @@ public class MySQLEngine implements DatabaseEngine {
 		return executeQuery(userQuery);
 	}
 	
+	@Override
 	public ResultSet getRoomRow(String roomName) {
-		//TODO: Need some other form of security here.
-		/*
 		if (!validateAlphanumericToken(roomName)) {
 			return null;
-		}*/
+		}
+		
+		/*
+		 * For the simplicity of the server code, I decided to enforce single-token
+		 * room names, with the following convention: the client will interpret the
+		 * underscore as a space, and display it that way to the user.
+		 */
 		
 		String roomQuery = "SELECT * FROM Rooms WHERE name = '" + roomName + "';";
 		return executeQuery(roomQuery);
 	}
 	
+	@Override
 	public ResultSet getAllUserNames() {
 		String userQuery = "SELECT userName FROM Users;";
 		return executeQuery(userQuery);
 	}
 	
+	@Override
 	public ResultSet getAllRoomNames() {
 		String roomQuery = "SELECT name FROM Rooms;";
 		return executeQuery(roomQuery);
 	}
 	
+	/**
+	 * Executes a raw SQL query. It performs <b>no validation</b> whatsoever,
+	 * it is the caller's job to ensure the queries are clean.
+	 * 
+	 * @param query The query to be executed.
+	 * @return The ResultSet returned from the query, or <code>null</code>
+	 * only if the query was invalid.
+	 */
 	private synchronized ResultSet executeQuery(String query) {
 		try {
 			Statement stmt = conn.createStatement();
@@ -88,27 +113,19 @@ public class MySQLEngine implements DatabaseEngine {
 	/**
 	 * Verifies that a single token is alphanumeric. In particular, it will contain
 	 * no " or ' or ) or ; characters, which would be a target for SQL injections.
+	 * Strangely enough, we consider _ to be alphanumeric.
 	 * 
 	 * @param token The token to be validated.
-	 * @return <code>true</code> if every character in token is alphanumeric, and
+	 * @return <code>true</code> if every character in token is alphanumeric or _, and
 	 * <code>false</code> otherwise.
 	 */
 	private boolean validateAlphanumericToken(String token) {
 		for (int i = 0; i < token.length(); i++) {
-			if (!Character.isLetterOrDigit(token.charAt(i))) {
+			if (!(Character.isLetterOrDigit(token.charAt(i))) || token.charAt(i) == '_') {
 				return false;
 			}
 		}
 		return true;
-	}
-	
-	@Override
-	public boolean checkConnected() {
-		try {
-			return conn.isValid(10);
-		} catch (SQLException e) {
-			return false;
-		}
 	}
 
 }
