@@ -11,12 +11,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import server.main.GlobalInputMessageQueue;
 import server.services.GlobalService;
 import server.services.ServiceManager;
 import server.services.InvalidServiceConfigurationException;
-import server.services.protocol.InputMessageQueue;
-import server.services.protocol.ProtocolMessage;
 import server.services.user.NoSuchUserException;
 import server.services.user.User;
 
@@ -79,27 +76,11 @@ public class ConnectionManager implements GlobalService {
 	private int port;
 	private ConnectionListener listener;
 	private ConcurrentHashMap<User, ClientConnection> connectionTable;
+	private UserConnectedEvent userConnected;
+	private UserDisconnectedEvent userDisconnected;
 	
 	public String getIdentifier() {
 		return SERVICE_NAME;
-	}
-	
-	/**
-	 * Called when the server is shutting down. The ConnectionManager stops
-	 * accepting any more incoming connections, and iterates through the active 
-	 * connections, closing them cleanly.
-	 */
-	public void shutdown() {
-		listener.disconnect();
-		while (!connectionTable.isEmpty()) {
-			Collection<ClientConnection> connections = connectionTable.values();
-			Iterator<ClientConnection> connectionsIterator = connections.iterator();
-			while (connectionsIterator.hasNext()) {
-				ClientConnection connection = connectionsIterator.next();
-				connection.disconnect();
-				connections.remove(connection);
-			}
-		}
 	}
 	
 	/**
@@ -121,6 +102,11 @@ public class ConnectionManager implements GlobalService {
 			throw new InvalidServiceConfigurationException(SERVICE_NAME, properties, "port");
 		}
 		connectionTable = new ConcurrentHashMap<User, ClientConnection>();
+		userConnected = new UserConnectedEvent();
+		userDisconnected = new UserDisconnectedEvent();
+		ServiceManager.getEventManager().registerEvent(userConnected);
+		ServiceManager.getEventManager().registerEvent(userDisconnected);
+		
 		ConnectionListener listener = new ConnectionListener(port);
 		new Thread(listener, "ConnectionListener").start();
 	}
@@ -192,9 +178,7 @@ public class ConnectionManager implements GlobalService {
 						ClientConnection c = new ClientConnection(user, in, out, socket);
 						connectionTable.put(user, c);
 						
-						// Send the user the motd.
-						GlobalInputMessageQueue.getGlobalInputMessageQueue().enqueue(
-								new InputMessageQueue(new ProtocolMessage(user, "motd")));
+						userConnected.occured(user.getUserName());
 					}
 					
 				} else {
@@ -262,6 +246,26 @@ public class ConnectionManager implements GlobalService {
 		connectionTable.remove(user);
 		if (userConnection != null && userConnection.isConnected()) {			
 			userConnection.disconnect();
+		}
+		userDisconnected.occured(user.getUserName());
+	}
+	
+	
+	/**
+	 * Called when the server is shutting down. The ConnectionManager stops
+	 * accepting any more incoming connections, and iterates through the active 
+	 * connections, closing them cleanly.
+	 */
+	public void shutdown() {
+		listener.disconnect();
+		while (!connectionTable.isEmpty()) {
+			Collection<ClientConnection> connections = connectionTable.values();
+			Iterator<ClientConnection> connectionsIterator = connections.iterator();
+			while (connectionsIterator.hasNext()) {
+				ClientConnection connection = connectionsIterator.next();
+				connection.disconnect();
+				connections.remove(connection);
+			}
 		}
 	}
 

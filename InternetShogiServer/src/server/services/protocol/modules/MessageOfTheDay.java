@@ -8,8 +8,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
 
+import server.main.GlobalInputMessageQueue;
+import server.services.ServiceManager;
+import server.services.event.EventCallback;
+import server.services.protocol.InputMessageQueue;
 import server.services.protocol.OutputMessageQueue;
 import server.services.protocol.ProtocolMessage;
+import server.services.user.NoSuchUserException;
 
 /**
  * The MessageOfTheDay (MOTD for short) is a message sent to all users on
@@ -21,6 +26,22 @@ import server.services.protocol.ProtocolMessage;
  */
 public class MessageOfTheDay implements ProtocolModule {
 
+	class NewUserCallback implements EventCallback {
+		
+		public void eventOccured(Properties properties) {
+			if (properties.containsKey("userName")) {
+				try {
+					GlobalInputMessageQueue.getGlobalInputMessageQueue().enqueue(
+							new InputMessageQueue(new ProtocolMessage(ServiceManager.getUserManager().getUser(properties.getProperty("userName")), "motd")));
+				} catch (NoSuchUserException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+		
+	}
+	
 	private ArrayList<String> message;
 	
 	public static final String name = "MessageOfTheDay";
@@ -65,6 +86,9 @@ public class MessageOfTheDay implements ProtocolModule {
 		} catch (IOException e) {
 			throw new InvalidProtocolConfigurationException(getName(), properties, "file", "Configuration file" + motdConfFile + " is not readable.");
 		}
+		
+		NewUserCallback newUser = new NewUserCallback();
+		ServiceManager.getEventManager().registerCallback(newUser, ServiceManager.getEventManager().getEvent("USER_CONNECT"));
 	}
 
 	/**
