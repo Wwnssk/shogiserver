@@ -51,9 +51,15 @@ public class Room {
 	 * Add a new user to the room's occupancy list.
 	 * 
 	 * @param user The user to add.
+	 * @return <code>true</code> if the user wasn't already in the room,
+	 * <code>false</code> otherwise.
 	 */
-	public void addUser(User user) {
+	public boolean addUser(User user) {
+		if (occupants.contains(user)) {
+			return false;
+		}
 		occupants.add(user);
+		return true;
 	}
 	
 	/**
