@@ -68,4 +68,19 @@ interface DatabaseEngine {
 	 */
 	public ResultSet getAllUserNames();
 	
+	/**
+	 * Get the row in the Rooms table corresponding to the given room name.
+	 * 
+	 * @param roomName The room to retrieve information about.
+	 * @return A ResultSet with one row containing the given user's information,
+	 * or <code>null</code> if it could not be found.
+	 */
+	public ResultSet getRoomRow(String roomName);
+	
+	/**
+	 * Get the entire name column of the Rooms table.
+	 * @return A ResultSet with a row containing the name of each registered room.
+	 */
+	public ResultSet getAllRoomNames();
+	
 }

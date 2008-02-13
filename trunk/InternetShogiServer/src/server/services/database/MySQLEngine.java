@@ -53,9 +53,25 @@ public class MySQLEngine implements DatabaseEngine {
 		return executeQuery(userQuery);
 	}
 	
+	public ResultSet getRoomRow(String roomName) {
+		//TODO: Need some other form of security here.
+		/*
+		if (!validateAlphanumericToken(roomName)) {
+			return null;
+		}*/
+		
+		String roomQuery = "SELECT * FROM Rooms WHERE name = '" + roomName + "';";
+		return executeQuery(roomQuery);
+	}
+	
 	public ResultSet getAllUserNames() {
 		String userQuery = "SELECT userName FROM Users;";
 		return executeQuery(userQuery);
+	}
+	
+	public ResultSet getAllRoomNames() {
+		String roomQuery = "SELECT name FROM Rooms;";
+		return executeQuery(roomQuery);
 	}
 	
 	private synchronized ResultSet executeQuery(String query) {

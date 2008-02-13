@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import server.services.GlobalService;
 import server.services.InvalidServiceConfigurationException;
+import server.services.protocol.modules.room.RoomInformation;
 import server.services.user.User;
 import server.services.user.UserInformation;
 
@@ -84,12 +85,16 @@ public class DatabaseManager implements GlobalService {
 	 * Get a UserInformation structure populated with data about the given
 	 * user.
 	 * 
-	 * @param user The user whose information to retrieve.
-	 * @return A fully populated UserInformation structure.
+	 * @param userName The user whose information to retrieve.
+	 * @return A fully populated UserInformation structure, or <code>null</code>
+	 * if the specified user could not be found.
 	 */
-	public UserInformation getUserInfo(User user) {
-		ResultSet rs = engine.getUserRow(user.getUserName());
-		UserInformation userInfo = new UserInformation(user.getUserName());
+	public UserInformation getUserInfo(String userName) {
+		ResultSet rs = engine.getUserRow(userName);
+		if (rs == null) {
+			return null;
+		}
+		UserInformation userInfo = new UserInformation(userName);
 		try {
 			rs.next();
 			userInfo.setEmail(rs.getString("email"));
@@ -99,6 +104,31 @@ public class DatabaseManager implements GlobalService {
 			System.err.println(e.getMessage());
 		}
 		return userInfo;
+	}
+	
+	/**
+	 * Get a RoomInformation structure populated with data about the given
+	 * room.
+	 * 
+	 * @param roomName The room whose information to retrieve.
+	 * @return A fully populated RoomInformation structure, or <code>null</code>
+	 * if the specified room could not be found.
+	 */
+	public RoomInformation getRoomInfo(String roomName) {
+		ResultSet rs = engine.getRoomRow(roomName);
+		if (rs == null) {
+			return null;
+		}
+		RoomInformation roomInfo = new RoomInformation(roomName);
+		try {
+			rs.next();
+			roomInfo.setDescription(rs.getString("description"));
+			roomInfo.setOwners(rs.getString("owners").split(","));
+			rs.close();
+		} catch (SQLException e) {
+			System.err.println(e.getMessage());
+		}
+		return roomInfo;
 	}
 	
 	/**
@@ -112,6 +142,27 @@ public class DatabaseManager implements GlobalService {
 		try {
 			while (rs.next()) {
 				names.add(rs.getString("userName"));
+			}
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		String[] nameArray = new String[names.size()];
+		names.toArray(nameArray);
+		return nameArray;
+	}
+	
+	/**
+	 * Get a list of all registered rooms.
+	 * 
+	 * @return An array containing the name of every room in the database.
+	 */
+	public String[] getRegisteredRooms() {
+		ResultSet rs = engine.getAllRoomNames();
+		ArrayList<String> names = new ArrayList<String>();
+		try {
+			while (rs.next()) {
+				names.add(rs.getString("name"));
 			}
 			rs.close();
 		} catch (SQLException e) {

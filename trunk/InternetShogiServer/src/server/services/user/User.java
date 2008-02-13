@@ -41,7 +41,7 @@ public class User {
 	 */
 	protected User(String userName) {
 		this.userName = userName;
-		this.info = ServiceManager.getDatabaseManager().getUserInfo(this);
+		this.info = ServiceManager.getDatabaseManager().getUserInfo(userName);
 	}
 	
 	/**

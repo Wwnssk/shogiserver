@@ -2,6 +2,7 @@ package server.services.protocol;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,13 +49,15 @@ public class ProtocolMap {
 			String moduleName = dependency.split(" ")[0];
 			String moduleVersion = dependency.split(" ")[1];
 			boolean dependencyMet = false;
-			for (ProtocolModule loadedModule : ((ProtocolModule[]) loadedModules.toArray())) {
+			Iterator<ProtocolModule> i = loadedModules.iterator();
+			while (i.hasNext()) {
+				ProtocolModule loadedModule = i.next();
 				if (loadedModule.getName().equals(moduleName)) {
 					String loadedModuleVersion = loadedModule.getVersion();
 					if (loadedModuleVersion.charAt(0) > moduleVersion.charAt(0)) {
 						dependencyMet = true;
 					} else if (loadedModuleVersion.charAt(0) == moduleVersion.charAt(0)
-							&& Integer.parseInt(loadedModuleVersion.substring(2)) > Integer.parseInt(moduleVersion.substring(2))) {
+							&& Integer.parseInt(loadedModuleVersion.substring(2)) >= Integer.parseInt(moduleVersion.substring(2))) {
 						dependencyMet = true;
 					}
 				}
