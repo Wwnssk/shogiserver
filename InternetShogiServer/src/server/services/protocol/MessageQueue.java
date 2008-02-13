@@ -1,6 +1,9 @@
 package server.services.protocol;
 
+import java.util.Iterator;
 import java.util.Queue;
+
+import server.services.user.User;
 
 
 /**
@@ -106,4 +109,18 @@ public abstract class MessageQueue {
 	public int getPriority() {
 		return priority;
 	}
+	
+	/**
+	 * Sets the user (usually the recipient) of every individual ProtocolMessage in
+	 * this queue.
+	 * 
+	 * @param user The user to  be associated with every message in this queue.
+	 */
+	public void setUser(User user) {
+		Iterator<ProtocolMessage> i = messageQueue.iterator();
+		while (i.hasNext()) {
+			i.next().setUser(user);
+		}
+	}
+	
 }

@@ -1,7 +1,7 @@
 package server.services.user;
 
 import java.util.Properties;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import server.services.GlobalService;
 import server.services.InvalidServiceConfigurationException;
@@ -18,7 +18,7 @@ import server.services.ServiceManager;
  */
 public class UserManager implements GlobalService {
 	
-	private HashMap<String, User> userTable;
+	private ConcurrentHashMap<String, User> userTable;
 	
 	public static final String SERVICE_NAME = "UserManager";
 	
@@ -39,13 +39,13 @@ public class UserManager implements GlobalService {
 	 * user_table (the table containing the user records).
 	 */
 	public void initialize(Properties properties) throws InvalidServiceConfigurationException {
-		userTable = new HashMap<String, User>();
+		userTable = new ConcurrentHashMap<String, User>();
 		
 		// Load up every user from the database.
 		String[] userNames = ServiceManager.getDatabaseManager().getRegisteredUsers();
-		for (int i = 0; i < userNames.length; i++) {
-			User user = new User(userNames[i]);
-			userTable.put(user.getUserName(), user);
+		for (String userName : userNames) {
+			User user = new User(userName);
+			userTable.put(userName, user);
 		}
 	}
 	
