@@ -124,10 +124,11 @@ public class RoomManager implements ProtocolModule {
 			
 			if (messagePayload[0].equals("join")) {
 				Room roomToJoin = getRoom(messagePayload[1]);
+				boolean joinedRoom = false;
 				if (roomToJoin != null) {
-					roomToJoin.addUser(message.getUser());
+					joinedRoom = roomToJoin.addUser(message.getUser());
 				}
-				return getRoomJoinMessages(message);
+				return getRoomJoinMessages(message, joinedRoom);
 			}
 			
 			if (messagePayload[0].equals("leave")) {
@@ -144,11 +145,22 @@ public class RoomManager implements ProtocolModule {
 		return invalidSyntaxMessage(message);
 	}
 
-	private OutputMessageQueue getRoomJoinMessages(ProtocolMessage message) {
+	/**
+	 * Returns all of the messages sent when a new user joins an existing room. Namely,
+	 * it sends <br>
+	 * <code>room join <i>user</i></code><br>
+	 * to each user already in the room, including the joiner.
+	 * 
+	 * @param message The join request message.
+	 * @param joinedRoom Whether the join was successful.
+	 * @return A MessageQueue containing a join notification message to each user in the
+	 * room following the syntax above, or <code>null</code> if the room is invalid.
+	 */
+	private OutputMessageQueue getRoomJoinMessages(ProtocolMessage message, boolean joinedRoom) {
 		OutputMessageQueue roomJoinMessageQueue = new OutputMessageQueue();
 		Room room = getRoom(message.getTokenizedPayload()[1]);
 		
-		if (room == null) {
+		if (room == null || !joinedRoom) {
 			roomJoinMessageQueue.enqueue(new ProtocolMessage(message.getUser(),
 					"room join invalid room_not_exist"));
 			return roomJoinMessageQueue;
@@ -166,6 +178,17 @@ public class RoomManager implements ProtocolModule {
 		return roomJoinMessageQueue;
 	}
 	
+	/**
+	 * Returns all of the messages sent when a user leaves an existing room. Namely,
+	 * it sends <br>
+	 * <code>room join <i>user</i></code><br>
+	 * to each user in the room, including the leaver.
+	 * 
+	 * @param message The leave request message.
+	 * @param leftRoom Whether the leave was successful.
+	 * @return A MessageQueue containing a leave notification message to each user in the
+	 * room following the syntax above, or <code>null</code> if the room is invalid.
+	 */
 	private OutputMessageQueue getRoomLeaveMessage(ProtocolMessage message, boolean leftRoom) {
 		OutputMessageQueue roomLeaveMessageQueue = new OutputMessageQueue();
 		Room room = getRoom(message.getTokenizedPayload()[1]);
@@ -219,6 +242,7 @@ public class RoomManager implements ProtocolModule {
 		
 		if (room == null) {
 			roomInfoMessageQueue.enqueue(new ProtocolMessage("room info invalid room_not_exist"));
+			return roomInfoMessageQueue;
 		}
 
 		roomInfoMessageQueue.enqueue(new ProtocolMessage(getKey()
