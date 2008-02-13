@@ -7,6 +7,7 @@ import server.services.connection.ConnectionManager;
 import server.services.protocol.ProtocolManager;
 import server.services.user.UserManager;
 import server.services.database.DatabaseManager;
+import server.services.event.EventManager;
 
 /**
  * The ServiceManager is one of the server's key subsystems. It is responsible for
@@ -131,8 +132,42 @@ public class ServiceManager {
 			serviceList.put(UserManager.SERVICE_NAME, userManager);
 		}
 		return (UserManager) serviceList.get(UserManager.SERVICE_NAME);
+	}	
+	
+	/**
+	 * Get access to the EventManager service, which registers events and their
+	 * callbacks.
+	 * 
+	 * If the EventManager has not been accessed before, it will be created now.
+	 * 
+	 * @return A reference to the EventManager.
+	 */
+	public static EventManager getEventManager() {
+		if (!serviceList.containsKey(EventManager.SERVICE_NAME)) {
+			EventManager eventManager = new EventManager();
+			try {
+				if (configurationList.containsKey(EventManager.SERVICE_NAME)) {
+					eventManager.initialize(configurationList.get(EventManager.SERVICE_NAME));
+				} else {
+					eventManager.initialize(new Properties());
+				}
+			} catch (InvalidServiceConfigurationException e) {
+				System.err.println(e.getMessage());
+				System.exit(-1);
+			}
+			serviceList.put(EventManager.SERVICE_NAME, eventManager);
+		}
+		return (EventManager) serviceList.get(EventManager.SERVICE_NAME);
 	}
 	
+	/**
+	 * Get access to the DatabaseManager service, which connects, queries, and
+	 * updates the server backend.
+	 * 
+	 * If the DatabaseManager has not been accessed before, it will be created now.
+	 * 
+	 * @return A reference to the DatabaseManager.
+	 */
 	public static DatabaseManager getDatabaseManager() {
 		if (!serviceList.containsKey(DatabaseManager.SERVICE_NAME)) {
 			DatabaseManager databaseManager = new DatabaseManager();

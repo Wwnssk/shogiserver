@@ -1,7 +1,6 @@
 package server.services.connection;
 
 import java.net.Socket;
-import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.IOException;
