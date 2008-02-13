@@ -13,7 +13,7 @@ public class InvalidServiceException extends Throwable {
 	private String message;
 
 	/* Satisfies the condition that extends Throwable (which
-	 * implements Serializable) specifices this value for
+	 * implements Serializable) specifies this value for
 	 * serialization purposes. It doesn't really matter what
 	 * we use here.
 	 */
