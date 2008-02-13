@@ -59,7 +59,7 @@ public class ClientConnection {
 						clientConnection.messageRecieved(line);
 					}
 				} catch (IOException e) {
-					// An error occured, we'll let the server decide whether we
+					// An error occurred, we'll let the server decide whether we
 					// should keep trying.
 					connected = clientConnection.connectionErrorOccured(e);
 				}

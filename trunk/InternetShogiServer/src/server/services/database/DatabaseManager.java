@@ -8,7 +8,6 @@ import java.util.Properties;
 import server.services.GlobalService;
 import server.services.InvalidServiceConfigurationException;
 import server.services.protocol.modules.room.RoomInformation;
-import server.services.user.User;
 import server.services.user.UserInformation;
 
 /**

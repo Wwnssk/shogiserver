@@ -23,6 +23,7 @@ public class User {
 	/** Private constructor - only the UserManager can get information
 	  * about users.
 	  */
+	@SuppressWarnings("unused")
 	private User() {}
 	
 	public boolean equals(Object obj) {

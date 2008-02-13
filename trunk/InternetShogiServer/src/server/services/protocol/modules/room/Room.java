@@ -20,6 +20,7 @@ public class Room {
 	private RoomInformation roomInfo;
 	private String roomName;
 	
+	@SuppressWarnings("unused")
 	private Room() { }
 	
 	Room(String roomName) {
