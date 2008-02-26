@@ -5,6 +5,10 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import server.main.GlobalInputMessageQueue;
 import server.services.ServiceManager;
 import server.services.protocol.InputMessageQueue;
@@ -75,32 +79,50 @@ public class ClientConnection {
 	 * @author Adrian Petrescu
 	 *
 	 */
-	class OutputListener implements Runnable {
+	class OutputWriter implements Runnable {
 		private PrintWriter out;
 		private ClientConnection clientConnection;
-		private ProtocolMessage message;
+		private BlockingQueue<ProtocolMessage> outputQueue;
+		
+		/* An arbitrary number representing how many messages could presumably be
+		 * sent to the user at the same time. Tweaking this value can improve
+		 * performance.
+		 */
+		private static final int MAX_CAPACITY = 150;
 
-		private OutputListener(ClientConnection clientConnection,
-				PrintWriter out, ProtocolMessage message) {
+		private OutputWriter(ClientConnection clientConnection,
+				PrintWriter out) {
 			this.clientConnection = clientConnection;
 			this.out = out;
-			this.message = message;
+			this.outputQueue = new LinkedBlockingQueue<ProtocolMessage>(MAX_CAPACITY);
 		}
 
 		public void run() {
-			clientConnection.currentlyWriting = true;
-			String line = message.getMessage();
-			out.println(line);
-			out.flush();
-			clientConnection.messageSent();
+			while(true) {
+				try {
+					String line = outputQueue.take().getMessage();
+					out.println(line);
+					out.flush();
+					clientConnection.messageSent();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		public void sendMessage(ProtocolMessage message) {
+			try {
+				outputQueue.offer(message, 2, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	private static final int MAX_FAILURES = 3;
 
-	private volatile boolean currentlyWriting;
 	private InputListener inputListener;
-	private PrintWriter out;
+	private OutputWriter outputWriter;
 	private User user;
 	private Socket socket;
 	private volatile boolean keepConnected;
@@ -112,17 +134,15 @@ public class ClientConnection {
 	 * 
 	 * @param user The User who has logged in over this connection.
 	 * @param socket The socket over which the connection was established.
-	 * @throws IOException Thrown in case the ClientConnection was unable to
-	 * re-open the input or output streams from the socket.
 	 */
-	public ClientConnection(User user, BufferedReader in, PrintWriter out, Socket socket) throws IOException {
+	public ClientConnection(User user, BufferedReader in, PrintWriter out, Socket socket) {
 		inputListener = new InputListener(this, in);
-		this.out = out;
-		currentlyWriting = false;
+		outputWriter = new OutputWriter(this, out);
 		this.user = user;
 		this.socket = socket;
 		keepConnected = true;
 		new Thread(inputListener, "ClientListener: " + user.getUserName()).start();
+		new Thread(outputWriter, "OutputListener: " + user.getUserName()).start();
 	}
 
 	/**
@@ -147,7 +167,6 @@ public class ClientConnection {
 	 * channel is ready for a new message to be written.
 	 */
 	private void messageSent() {
-		currentlyWriting = false;
 	}
 
 	/**
@@ -163,15 +182,7 @@ public class ClientConnection {
 	 * sent, only that the connection was still alive when it began sending.
 	 */
 	public synchronized boolean sendMessage(ProtocolMessage message) {
-		while (currentlyWriting) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				return false;
-			}
-		}
-		OutputListener clientWriter = new OutputListener(this, out, message);
-		new Thread(clientWriter, "ClientWriter: " + user.getUserName()).start();
+		outputWriter.sendMessage(message);
 		return true;
 	}
 
