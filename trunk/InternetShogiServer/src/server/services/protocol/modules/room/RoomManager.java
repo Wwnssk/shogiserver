@@ -3,11 +3,15 @@ package server.services.protocol.modules.room;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+import server.main.GlobalInputMessageQueue;
 import server.services.ServiceManager;
+import server.services.event.EventCallback;
+import server.services.protocol.InputMessageQueue;
 import server.services.protocol.OutputMessageQueue;
 import server.services.protocol.ProtocolMessage;
 import server.services.protocol.modules.InvalidProtocolConfigurationException;
 import server.services.protocol.modules.ProtocolModule;
+import server.services.user.NoSuchUserException;
 import server.services.user.User;
 
 
@@ -22,6 +26,23 @@ import server.services.user.User;
  */
 public class RoomManager implements ProtocolModule {
 
+	class UserQuitCallback implements EventCallback {
+
+		@Override
+		public void eventOccured(Properties eventData) {
+			try {
+				User userQuit = ServiceManager.getUserManager().getUser(eventData.getProperty("userName"));
+				for (Room room : roomTable.values().toArray(new Room[0])) {
+					if (room.occupants.contains(userQuit)) {
+						ProtocolMessage quit = new ProtocolMessage(userQuit, "room leave " + room.getRoomInformation().getName());
+						GlobalInputMessageQueue.getGlobalInputMessageQueue().enqueue(new InputMessageQueue(quit));
+					}
+				}
+			} catch (NoSuchUserException e) {}
+		}
+	
+	}
+	
 	private static final String name = "Room";
 	private static final String protocolKey = "room";
 	private static final String version = "0.01";
@@ -71,6 +92,9 @@ public class RoomManager implements ProtocolModule {
 			Room room = new Room(roomName);
 			roomTable.put(roomName, room);
 		}
+		
+		UserQuitCallback userQuitCallback = new UserQuitCallback();
+		ServiceManager.getEventManager().registerCallback(userQuitCallback, ServiceManager.getEventManager().getEvent("USER_DISCONNECT"));
 	}
 
 	/**
@@ -114,13 +138,14 @@ public class RoomManager implements ProtocolModule {
 		 * room info _roomname_
 		 * room join _roomname_
 		 * room leave _roomname_
+		 * room tell _roomname_ _message_
 		 */
 		case 2:
 			if (messagePayload[0].equals("info")) {
 				OutputMessageQueue roomInfoMessageQueue = getRoomInfoMessage(messagePayload[1]);
 				roomInfoMessageQueue.setUser(message.getUser());
 				return roomInfoMessageQueue;
-			}
+			} else
 			
 			if (messagePayload[0].equals("join")) {
 				Room roomToJoin = getRoom(messagePayload[1]);
@@ -129,7 +154,7 @@ public class RoomManager implements ProtocolModule {
 					joinedRoom = roomToJoin.addUser(message.getUser());
 				}
 				return getRoomJoinMessages(message, joinedRoom);
-			}
+			} else
 			
 			if (messagePayload[0].equals("leave")) {
 				Room roomToLeave = getRoom(messagePayload[1]);
@@ -137,12 +162,49 @@ public class RoomManager implements ProtocolModule {
 				if (roomToLeave != null) {
 					leftRoom = roomToLeave.removeUser(message.getUser());
 				}
-				return getRoomLeaveMessage(message, leftRoom);
+				return getRoomLeaveMessages(message, leftRoom);
+			}
+			break;
+			
+		default:
+			if (messagePayload[0].equals("tell")) {
+				return getRoomTellMessages(message);
 			}
 			break;
 		}
 
 		return invalidSyntaxMessage(message);
+	}
+
+	private OutputMessageQueue getRoomTellMessages(ProtocolMessage message) {
+		OutputMessageQueue roomTellMessageQueue = new OutputMessageQueue();
+		Room room = getRoom(message.getTokenizedPayload()[1]);
+		
+		if (room == null) { 
+			roomTellMessageQueue.enqueue(new ProtocolMessage(message.getUser(),
+					"room tell invalid room_not_exist"));
+			return roomTellMessageQueue;
+		}
+		
+		if (!room.occupants.contains(message.getUser())) {
+			roomTellMessageQueue.enqueue(new ProtocolMessage(message.getUser(),
+					"room tell invalid room_not_joined"));
+			return roomTellMessageQueue;
+		}
+		
+		for (User roomOccupant : room.getOccupants()) {
+			ProtocolMessage tellMessage = new ProtocolMessage(roomOccupant);
+			tellMessage.setProtocolKey(getKey());
+			tellMessage.append("tell");
+			tellMessage.append(room.getRoomInformation().getName());
+			tellMessage.append(message.getUser().getUserName());
+			for (int i = 2; i < message.getTokenizedPayload().length; i++) {
+				tellMessage.append(message.getTokenizedPayload()[i]);
+			}
+			roomTellMessageQueue.enqueue(tellMessage);
+		}
+		
+		return roomTellMessageQueue;
 	}
 
 	/**
@@ -189,7 +251,7 @@ public class RoomManager implements ProtocolModule {
 	 * @return A MessageQueue containing a leave notification message to each user in the
 	 * room following the syntax above, or <code>null</code> if the room is invalid.
 	 */
-	private OutputMessageQueue getRoomLeaveMessage(ProtocolMessage message, boolean leftRoom) {
+	private OutputMessageQueue getRoomLeaveMessages(ProtocolMessage message, boolean leftRoom) {
 		OutputMessageQueue roomLeaveMessageQueue = new OutputMessageQueue();
 		Room room = getRoom(message.getTokenizedPayload()[1]);
 		

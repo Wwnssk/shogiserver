@@ -15,10 +15,10 @@ import server.services.user.User;
  */
 public class Room {
 
-	private ArrayList<User> occupants;
-	private ArrayList<User> owners;
-	private RoomInformation roomInfo;
-	private String roomName;
+	ArrayList<User> occupants;
+	ArrayList<User> owners;
+	RoomInformation roomInfo;
+	String roomName;
 	
 	@SuppressWarnings("unused")
 	private Room() { }
