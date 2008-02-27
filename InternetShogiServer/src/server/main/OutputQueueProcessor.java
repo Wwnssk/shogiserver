@@ -54,6 +54,11 @@ public class OutputQueueProcessor implements Runnable {
 					boolean messageSent;
 					ProtocolMessage outputMessage = output.dequeue();
 					ClientConnection conn = connectionManager.getUserConnection(outputMessage.getUser());
+					
+					if (conn == null) {
+						break;
+					}
+					
 					messageSent = conn.sendMessage(outputMessage);
 					if (messageSent) {
 						//TODO: Do some error-checking here.
