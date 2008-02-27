@@ -16,6 +16,7 @@ import server.services.protocol.modules.MessageOfTheDay;
 import server.services.protocol.modules.ProtocolDependenciesNotMetException;
 import server.services.protocol.modules.ProtocolModule;
 import server.services.protocol.modules.Tell;
+import server.services.protocol.modules.Test;
 import server.services.protocol.modules.room.RoomManager;
 
 /**
@@ -124,8 +125,20 @@ public class ProtocolManager implements GlobalService {
 			loadProtocolModule(roomManager, properties);
 		} catch (Throwable e) {
 			throw new InvalidServiceConfigurationException(SERVICE_NAME,
-					properties, motd.getKey());
+					properties, roomManager.getKey());
 		}
+		
+		/** 
+		// Load Test module
+		ProtocolModule test = new Test();
+		try {
+			loadProtocolModule(test, properties);
+		} catch (Throwable e) {
+			throw new InvalidServiceConfigurationException(SERVICE_NAME,
+					properties, test.getKey());
+		}
+		*/
+		
 	}
 
 	/**
