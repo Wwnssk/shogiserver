@@ -25,12 +25,10 @@ public class EventManager implements GlobalService {
 	private ConcurrentHashMap<Event, List<EventCallback>> eventCallbackTable;
 	private ConcurrentHashMap<String, Event> eventTable;
 	
-	@Override
 	public String getIdentifier() {
 		return SERVICE_NAME;
 	}
 
-	@Override
 	public void initialize(Properties properties)
 			throws InvalidServiceConfigurationException {
 		eventCallbackTable = new ConcurrentHashMap<Event, List<EventCallback>>();
@@ -115,7 +113,6 @@ public class EventManager implements GlobalService {
 		return eventTable.get(eventName);
 	}
 	
-	@Override
 	public void shutdown() {
 	}
 

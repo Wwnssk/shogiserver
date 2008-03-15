@@ -18,7 +18,6 @@ public class MySQLEngine implements DatabaseEngine {
 
 	Connection conn;
 	
-	@Override
 	public void connect(String host, int port, String user, String password,
 			String database) throws SQLException {
 		try {
@@ -39,21 +38,18 @@ public class MySQLEngine implements DatabaseEngine {
 		}
 	}
 
-	@Override
 	public void disconnect() throws SQLException {
 		conn.close();
 	}
 	
-	@Override
 	public boolean checkConnected() {
 		try {
-			return conn.isValid(10);
+			return !conn.isClosed();
 		} catch (SQLException e) {
 			return false;
 		}
 	}
 	
-	@Override
 	public ResultSet getUserRow(String userName) {
 		if (!validateAlphanumericToken(userName)) {
 			return null;
@@ -63,7 +59,6 @@ public class MySQLEngine implements DatabaseEngine {
 		return executeQuery(userQuery);
 	}
 	
-	@Override
 	public ResultSet getRoomRow(String roomName) {
 		if (!validateAlphanumericToken(roomName)) {
 			return null;
@@ -79,13 +74,11 @@ public class MySQLEngine implements DatabaseEngine {
 		return executeQuery(roomQuery);
 	}
 	
-	@Override
 	public ResultSet getAllUserNames() {
 		String userQuery = "SELECT userName FROM Users;";
 		return executeQuery(userQuery);
 	}
 	
-	@Override
 	public ResultSet getAllRoomNames() {
 		String roomQuery = "SELECT name FROM Rooms;";
 		return executeQuery(roomQuery);
