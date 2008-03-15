@@ -1,10 +1,10 @@
 package server.main;
 
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -31,7 +31,7 @@ public class Launcher {
 		String[] keys = new String[0];
 
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(new File(configFileName)));
+			InputStream in = new FileInputStream(new File(configFileName));
 			config.load(in);
 			keys = new String[config.size()];
 			config.keySet().toArray(keys);

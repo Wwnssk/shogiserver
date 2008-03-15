@@ -24,12 +24,10 @@ public class DatabaseManager implements GlobalService {
 	public static final String SERVICE_NAME = "DatabaseManager";
 	DatabaseEngine engine;
 	
-	@Override
 	public String getIdentifier() {
 		return SERVICE_NAME;
 	}
 
-	@Override
 	public void initialize(Properties properties)
 			throws InvalidServiceConfigurationException {
 		String dbEngine = properties.getProperty("engine");
@@ -192,7 +190,6 @@ public class DatabaseManager implements GlobalService {
 		}
 	}
 		
-	@Override
 	public void shutdown() {
 		try {
 			engine.disconnect();

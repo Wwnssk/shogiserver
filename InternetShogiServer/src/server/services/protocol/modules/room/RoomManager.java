@@ -28,7 +28,6 @@ public class RoomManager implements ProtocolModule {
 
 	class UserQuitCallback implements EventCallback {
 
-		@Override
 		public void eventOccured(Properties eventData) {
 			try {
 				User userQuit = ServiceManager.getUserManager().getUser(eventData.getProperty("userName"));
@@ -50,22 +49,18 @@ public class RoomManager implements ProtocolModule {
 
 	private ConcurrentHashMap<String, Room> roomTable;
 
-	@Override
 	public String[] getDependencies() {
 		return dependencies;
 	}
 
-	@Override
 	public String getKey() {
 		return protocolKey;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public String getVersion() {
 		return version;
 	}
@@ -80,7 +75,6 @@ public class RoomManager implements ProtocolModule {
 		return roomTable.get(roomName);
 	}
 
-	@Override
 	public void initialize(Properties properties)
 			throws InvalidProtocolConfigurationException {
 		roomTable = new ConcurrentHashMap<String, Room>();
@@ -108,7 +102,6 @@ public class RoomManager implements ProtocolModule {
 				getKey() + " invalid syntax"));
 	}
 
-	@Override
 	public OutputMessageQueue parseMessage(ProtocolMessage message) {
 		String[] messagePayload = message.getTokenizedPayload();
 
@@ -330,7 +323,6 @@ public class RoomManager implements ProtocolModule {
 		return roomInfoMessageQueue;
 	}
 
-	@Override
 	public void shutdown() {}
 
 }

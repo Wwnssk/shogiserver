@@ -48,27 +48,22 @@ public class MessageOfTheDay implements ProtocolModule {
 	public static final String protocolKey = "motd";
 	public static final String version = "0.01";
 	
-	@Override
 	public String[] getDependencies() {
 		return new String[0];
 	}
 
-	@Override
 	public String getKey() {
 		return protocolKey;
 	}
 
-	@Override
 	public String getName() {
 		return name;
 	}
 
-	@Override
 	public String getVersion() {
 		return version;
 	}
 
-	@Override
 	public void initialize(Properties properties)
 			throws InvalidProtocolConfigurationException {
 		String motdConfFile = properties.getProperty("file");
@@ -106,7 +101,6 @@ public class MessageOfTheDay implements ProtocolModule {
 	 * <br>
 	 * <code><i>motd message *message*</i> ... <i>motd done</i></code>
 	 */
-	@Override
 	public OutputMessageQueue parseMessage(ProtocolMessage message) {
 		OutputMessageQueue outputQueue = new OutputMessageQueue();
 		Iterator<String> i = this.message.iterator();
@@ -121,7 +115,6 @@ public class MessageOfTheDay implements ProtocolModule {
 		return outputQueue;
 	}
 
-	@Override
 	public void shutdown() {
 	}
 

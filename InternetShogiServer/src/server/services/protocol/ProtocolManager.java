@@ -1,10 +1,10 @@
 package server.services.protocol;
 
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import server.main.GlobalOutputMessageQueue;
@@ -16,8 +16,10 @@ import server.services.protocol.modules.MessageOfTheDay;
 import server.services.protocol.modules.ProtocolDependenciesNotMetException;
 import server.services.protocol.modules.ProtocolModule;
 import server.services.protocol.modules.Tell;
-import server.services.protocol.modules.Test;
 import server.services.protocol.modules.room.RoomManager;
+
+/** For testing only */
+//import server.services.protocol.modules.Test;
 
 /**
  * This GlobalService is one of the core services of the system. It
@@ -35,7 +37,6 @@ public class ProtocolManager implements GlobalService {
 
 	private ProtocolMap protocolMap;
 
-	@Override
 	public String getIdentifier() {
 		return SERVICE_NAME;
 	}
@@ -63,9 +64,9 @@ public class ProtocolManager implements GlobalService {
 			InvalidProtocolConfigurationException {
 		Properties moduleProperties = new Properties();
 		if (properties.containsKey(module.getKey() + configFileSuffix)) {
-			BufferedReader in = new BufferedReader(new FileReader(new File(
+			InputStream in = new FileInputStream(new File(
 					(String) properties
-							.get(module.getKey() + configFileSuffix))));
+							.get(module.getKey() + configFileSuffix)));
 			moduleProperties.load(in);
 			in.close();
 		}
@@ -85,7 +86,6 @@ public class ProtocolManager implements GlobalService {
 	 * <i>module</i>_confFile - A path to a module-specific configuration
 	 * file, for any modules that may require it.
 	 */
-	@Override
 	public void initialize(Properties properties)
 			throws InvalidServiceConfigurationException {
 		// TODO: Load 3rd-party modules.
@@ -159,7 +159,6 @@ public class ProtocolManager implements GlobalService {
 	 * the ProtocolModules (like writing state to the database).
 	 * 
 	 */
-	@Override
 	public void shutdown() {
 		protocolMap.shutdown();
 	}
