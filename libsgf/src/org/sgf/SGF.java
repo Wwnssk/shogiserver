@@ -9,4 +9,8 @@ public class SGF {
 		this.gameTree = SGFGameTree.fromString(sgfBuf);
 	}
 	
+	public String toString() {
+		return gameTree.toString();
+	}
+	
 }

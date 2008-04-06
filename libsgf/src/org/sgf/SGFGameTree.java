@@ -15,6 +15,7 @@ public class SGFGameTree {
 		SGFGameTree gameTree = new SGFGameTree();
 		ArrayList<SGFGameTree> subtrees = new ArrayList<SGFGameTree>();
 		
+		/* Remove leading whitespace */
 		while (Character.isWhitespace(sgf.charAt(0))) {
 			sgf.deleteCharAt(0);
 		}
@@ -24,12 +25,14 @@ public class SGFGameTree {
 		}
 		sgf.deleteCharAt(0);
 		
+		/* Remove leading whitespace */
 		while (Character.isWhitespace(sgf.charAt(0))) {
 			sgf.deleteCharAt(0);
 		}
 		
 		gameTree.sequence = SGFSequence.fromString(sgf);
 		
+		/* Remove leading whitespace */
 		while (Character.isWhitespace(sgf.charAt(0))) {
 			sgf.deleteCharAt(0);
 		}
@@ -42,5 +45,15 @@ public class SGFGameTree {
 		sgf.deleteCharAt(0);
 		
 		return gameTree;
+	}
+	
+	public String toString() {
+		String result = "(";
+		result += sequence.toString();
+		for (SGFGameTree subtree : subtrees) {
+			result += subtree.toString();
+		}
+		result += ")";
+		return result;
 	}
 }
