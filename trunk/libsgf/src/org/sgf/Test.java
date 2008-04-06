@@ -20,6 +20,8 @@ public class Test {
 		SGFGameTree gameTree = SGFGameTree.fromString(new StringBuffer(sgf));
 		int a = 3;
 		a++;
+		System.out.println("=============================================");
+		System.out.println(gameTree.toString());
 	}
 	
 }

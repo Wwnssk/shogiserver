@@ -27,6 +27,10 @@ public class SGFProperty {
 			return propValues.toArray(new String[0]);
 		}
 	}
+	
+	private String escapePropertyValue(String propValue) {
+		return propValue.replace("]", "\\]");
+	}
 
 	public SGFProperty(String propIdent) {
 		this.propIdent = propIdent;
@@ -34,6 +38,8 @@ public class SGFProperty {
 
 	static SGFProperty fromString(StringBuffer sgf)
 			throws IncorrectFormatException {
+		
+		/* Remove leading whitespace */
 		if (!Character.isUpperCase(sgf.charAt(0))) {
 			throw new IncorrectFormatException();
 		}
@@ -69,11 +75,21 @@ public class SGFProperty {
 			}
 			sgf.deleteCharAt(0);
 			property.addValue(propValue);
+			
+			/* Remove leading whitespace */
 			while (Character.isWhitespace(sgf.charAt(0))) {
 				sgf.deleteCharAt(0);
 			}
 		}
 
 		return property;
+	}
+	
+	public String toString() {
+		String result = propIdent;
+		for (String value : getValues()) {
+			result += "[" + escapePropertyValue(value) + "]";
+		}
+		return result;
 	}
 }
